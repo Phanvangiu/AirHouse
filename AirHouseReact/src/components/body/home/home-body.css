@@ -1,0 +1,79 @@
+.carousel-button-group-body {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  & .icon {
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: none;
+  }
+}
+
+.body-item-arrowleft {
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: rgba(255, 255, 255, 0.5);
+  /* padding: 9px 12px; */
+  padding: 8px 17px;
+  margin-left: 1rem;
+  border-radius: 50%;
+
+  > .icon {
+    font-size: 1.5rem;
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(1);
+  }
+}
+
+.body-item-arrowright {
+  cursor: pointer;
+  margin-right: 1rem;
+  padding: 8px 17px;
+
+  border: 1px solid rgba(0, 0, 0, 0);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  > .icon {
+    font-size: 1.5rem;
+  }
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(1);
+  }
+}
+
+.disable {
+  visibility: hidden;
+}
+
+.custom-dot-list-style {
+  & button {
+    background-color: #dcd7d5;
+    border: 0;
+    width: 6px;
+    height: 6px;
+  }
+
+  transform: translateY(-70%);
+}
+
+.react-multi-carousel-dot button:hover:active {
+  background: #080808;
+}
+.react-multi-carousel-dot--active button {
+  background: #080808;
+}

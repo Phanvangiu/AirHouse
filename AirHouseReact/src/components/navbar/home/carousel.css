@@ -1,0 +1,54 @@
+.react-multiple-carousel__arrow::before {
+  color: black;
+}
+
+.react-multiple-carousel__arrow {
+  box-sizing: content-box;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  min-width: 5px;
+  min-height: 5px;
+  border-radius: 50px;
+  padding: 5px 10px;
+  background-color: white;
+  font-weight: 800;
+  transform: scale(80%);
+  transition: all 0s;
+  z-index: 0;
+}
+
+.react-multiple-carousel__arrow:hover {
+  background: white;
+  transform: scale(90%);
+}
+
+.react-multiple-carousel__arrow--left {
+  left: calc(0% + 1px);
+}
+
+.react-multiple-carousel__arrow--right {
+  right: calc(0% + 1px);
+}
+.carousel-button-group {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  & .icon {
+    background-color: black;
+    border: 1px solid black;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    color: white;
+  }
+}
+
+.left {
+  border: 0;
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+.right {
+  border: 0;
+  background-color: rgba(0, 0, 0, 0.01);
+}

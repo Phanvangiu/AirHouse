@@ -1,0 +1,10 @@
+
+  2023-12-25 17:55:27 Running ["artisan" expire-bookings] ................................................. 834ms FAIL
+  ⇂ "C:\xampp\php\php.exe" "artisan" expire-bookings > "NUL" 2>&1  
+  2023-12-25 17:55:37 Running ["artisan" expire-bookings] ................................................. 622ms FAIL
+  ⇂ "C:\xampp\php\php.exe" "artisan" expire-bookings > "NUL" 2>&1  
+  2023-12-25 17:55:47 Running ["artisan" expire-bookings] ................................................. 623ms FAIL
+  ⇂ "C:\xampp\php\php.exe" "artisan" expire-bookings > "NUL" 2>&1  
+  2023-12-25 17:55:57 Running ["artisan" expire-bookings] ................................................. 840ms FAIL
+  ⇂ "C:\xampp\php\php.exe" "artisan" expire-bookings > "NUL" 2>&1  
+
