@@ -137,7 +137,12 @@ const PaymentBooking = () => {
                 <StyledCheck>
                   <div>Check out day:</div>
                   <span>
-                    {formatCreatedAt(data.booking.check_out_date)}, before:
+                    {formatCreatedAt(
+                      new Date(data.booking.check_out_date).setDate(
+                        new Date(data.booking.check_out_date).getDate() + 1
+                      )
+                    )}
+                    , before:
                     <span> {data.booking.property.check_out_before}</span>
                   </span>
                 </StyledCheck>
@@ -168,7 +173,8 @@ const PaymentBooking = () => {
                 <StyledPropertyName>
                   <div>Amount:</div>
                   <span>
-                    {total(data.booking.price_for_stay, data.booking.site_fees)} $
+                    {total(data.booking.price_for_stay, data.booking.site_fees)}{" "}
+                    $
                   </span>
                 </StyledPropertyName>
               </StyledGuestBlock>

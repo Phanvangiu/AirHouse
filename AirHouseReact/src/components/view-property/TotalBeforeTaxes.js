@@ -274,17 +274,15 @@ const TotalBeforeTaxes = ({
     formData.append("total_person", guest);
     createBooking.mutate(formData, {
       onSuccess: (data) => {
-
         alert("success");
 
-        if(data.booking_status == "accepted"){
+        if (data.booking_status == "accepted") {
           navigate("/user/payment?booking_id=" + data.id);
         }
 
-        if(data.booking_status == "waiting"){
-          navigate("/user/booking-list")
+        if (data.booking_status == "waiting") {
+          navigate("/user/booking-list");
         }
-        
       },
       onError: (error) => {},
     });
@@ -449,18 +447,25 @@ const TotalBeforeTaxes = ({
         {value?.[0] && value?.[1] && (
           <div className="container">
             <div className="content">
-              <span>
-                {formatDate(value[0])} to {formatDate(value[1])}
-              </span>
+              <span>{calBookedLength(value[0], value[1])} night</span>
               <span>
                 $ {data.base_price * calBookedLength(value[0], value[1])}
               </span>
             </div>
             <div className="content">
-              <span>{calBookedLength(value[0], value[1]) + 1} night</span>
+              <span>{guest} guest</span>
             </div>
             <div className="content">
-              <span>{guest} guest</span>
+              <span>Check in after {data.check_in_after}</span>
+              <span>{formatDate(new Date(value[0]))}</span>
+            </div>
+            <div className="content">
+              <span>Check out before {data.check_out_before}</span>
+              <span>
+                {formatDate(
+                  new Date(value[1]).setDate(new Date(value[1]).getDate() + 1)
+                )}
+              </span>
             </div>
             <div className="content">
               <span>Site fees</span>
