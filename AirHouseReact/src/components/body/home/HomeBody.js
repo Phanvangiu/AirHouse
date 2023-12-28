@@ -88,7 +88,7 @@ function HomeBody() {
 
   return (
     <StyledBody>
-      {propertyQuery.isSuccess && propertyQuery.data.length == 0 && <PropertyNotFound />}
+      {/* {propertyQuery.isSuccess && propertyQuery.data.length == 0 && <PropertyNotFound />} */}
       {clickFilter && <FilterBody setShowPopUp={setClickFilter} />}
       <StyledContainer>
         {propertyQuery.isSuccess &&

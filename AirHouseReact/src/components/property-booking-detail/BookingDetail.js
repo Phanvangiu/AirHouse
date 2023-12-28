@@ -19,11 +19,13 @@ import PopUpContainer from "ui/PopUpContainer";
 import { DenyBookingMutation } from "api/userBookingApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { AcceptBookingMutation } from "api/userBookingApi";
+import { useNavigate } from "react-router-dom";
 
 const StyledPopUp = styled(PopUpContainer)`
   width: 50rem;
   height: 25rem;
   padding: 1rem;
+
 `;
 
 const StyledContainer = styled.div`
@@ -31,6 +33,14 @@ const StyledContainer = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   padding: 3rem;
+
+  & .avatar{
+    cursor: pointer;
+  }
+
+  @media (max-width: 1150px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const StyledCalender = styled(Calendar)`
@@ -76,7 +86,8 @@ const StyledBooking = styled.div`
   grid-template-columns: 1fr 2fr 1fr;
   padding: 1rem;
   align-items: center;
-  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+    rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
   border-radius: 5px;
   font-size: 14px;
   transition: all 0.1s;
@@ -193,17 +204,20 @@ const formatDate = (dateObj) => {
   const month = dateObj.getMonth() + 1;
   const year = dateObj.getFullYear();
 
-  return `${year}-${month < 10 ? "0" + month : month}-${date < 10 ? "0" + date : date}`;
+  return `${year}-${month < 10 ? "0" + month : month}-${
+    date < 10 ? "0" + date : date
+  }`;
 };
 
 export default function BookingDetail() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const inputRef = useRef();
   const [serachParam, setserachParam] = useSearchParams();
   const [inputCheck, setInputCheck] = useState(true);
   const propertyQuery = PropertyQuery(serachParam.get("property_id"));
   const [value, setValue] = useState([]);
-  const [active, setActive] = useState([true, false, false, false]);
+  const [active, setActive] = useState([true, false, false, false, false]);
   const [bookingStatus, setBookingStatus] = useState("waiting");
   const [currentPage, setCurrentPage] = useState(1);
   const [clickPopUp, setClickPopUp] = useState(false);
@@ -258,7 +272,7 @@ export default function BookingDetail() {
   };
 
   const onSetActive = (index) => {
-    const newActive = [false, false, false, false];
+    const newActive = [false, false, false, false, false];
     newActive[index] = true;
 
     if (index == 0) {
@@ -275,6 +289,10 @@ export default function BookingDetail() {
 
     if (index == 3) {
       setBookingStatus("denied");
+    }
+
+    if (index == 4) {
+      setBookingStatus("expired");
     }
 
     if (JSON.stringify(newActive) == JSON.stringify(active)) {
@@ -399,7 +417,13 @@ export default function BookingDetail() {
         <StyledLeftHeader>
           <p>Default</p>
           <div className="toggle-switch">
-            <input onChange={onChangeToDefault} checked={inputCheck} className="toggle-input" id="toggle" type="checkbox" />
+            <input
+              onChange={onChangeToDefault}
+              checked={inputCheck}
+              className="toggle-input"
+              id="toggle"
+              type="checkbox"
+            />
             <label className="toggle-label" htmlFor="toggle"></label>
           </div>
         </StyledLeftHeader>
@@ -426,41 +450,93 @@ export default function BookingDetail() {
           <StyledButton $styled={active[3]} onClick={() => onSetActive(3)}>
             Deny
           </StyledButton>
+          <StyledButton $styled={active[4]} onClick={() => onSetActive(4)}>
+            Expired
+          </StyledButton>
         </StyledHeader>
         <StyledContentBody>
           {propertyBookingQuery.isLoading && <Loading />}
           {propertyBookingQuery.isSuccess &&
             propertyBookingQuery.data.data.map((booking, index) => {
               return (
-                <StyledBooking onClick={() => onClickBooking(booking.check_in_date, booking.check_out_date)} key={index}>
+                <StyledBooking
+                  onClick={() =>
+                    onClickBooking(
+                      booking.check_in_date,
+                      booking.check_out_date
+                    )
+                  }
+                  key={index}
+                >
                   <div>
-                    <Avatar src={booking.user.image} size="100px" textSizeRatio={3} round={true} name={booking.user.first_name} />
+                    <Avatar
+                      className="avatar"
+                      onClick={() =>
+                        window.open(
+                          `/profile/dashboard/${booking.user.id}`,
+                          "_blank"
+                        )
+                      }
+                      src={booking.user.image}
+                      size="100px"
+                      textSizeRatio={3}
+                      round={true}
+                      name={booking.user.first_name}
+                    />
                   </div>
                   <div className="second">
                     <h3>
-                      {booking.user.first_name} {booking.user.last_name} - {booking.id}
+                      {booking.user.first_name} {booking.user.last_name} -{" "}
+                      {booking.id}
                     </h3>
                     <p>
-                      <FontAwesomeIcon className="icon" icon={faPhone} /> {booking.user.phonenumber}
+                      <FontAwesomeIcon className="icon" icon={faPhone} />{" "}
+                      {booking.user.phonenumber}
                     </p>
                     <p>
-                      <FontAwesomeIcon className="icon" icon={faEnvelope} /> {booking.user.email}{" "}
+                      <FontAwesomeIcon className="icon" icon={faEnvelope} />{" "}
+                      {booking.user.email}{" "}
                     </p>
                     <p>
                       <FontAwesomeIcon className="icon" icon={faCalendarDay} />
-                      {booking.check_in_date} <span className="to">to</span> {booking.check_out_date}
+                      {booking.check_in_date} <span className="to">to</span>{" "}
+                      {booking.check_out_date}
                     </p>
                   </div>
 
                   <StyledButtonList>
-                    <button disabled={active[0] != true} onClick={(ev) => onAccept(ev, booking.id)}>
+                    <button
+                      disabled={active[0] != true}
+                      onClick={(ev) => onAccept(ev, booking.id)}
+                    >
                       Accept
                     </button>
-                    <button disabled={active[0] != true} onClick={(ev) => onDeny(ev, booking.id)}>
+                    <button
+                      disabled={active[0] != true}
+                      onClick={(ev) => onDeny(ev, booking.id)}
+                    >
                       Deny
                     </button>
-                    <button onClick={() => onClickPayment(index)}>Payment Detail</button>
-                    <button>Send Message</button>
+                    <button
+                      disabled={active[2] != true}
+                      onClick={() => onClickPayment(index)}
+                    >
+                      Payment Detail
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate("/user/chat/", {
+                          replace: false,
+                          state: {
+                            user_Email: booking.user.email,
+                            first_Name: booking.user.first_name,
+                            last_Name: booking.user.last_name,
+                          },
+                        });
+                      }}
+                    >
+                      Send Message
+                    </button>
                   </StyledButtonList>
                 </StyledBooking>
               );
@@ -469,12 +545,45 @@ export default function BookingDetail() {
             <StyledPopUp setShowPopUp={() => setClickPopUp(false)}>
               {propertyBookingQuery.isSuccess && (
                 <div>
-                  <p>Property Id {propertyBookingQuery.data.data[chosenPayment].property_id}</p>
-                  <p>Check in {propertyBookingQuery.data.data[chosenPayment].check_in_date}</p>
-                  <p>Check out {propertyBookingQuery.data.data[chosenPayment].check_out_date}</p>
-                  <p>Price per day {propertyBookingQuery.data.data[chosenPayment].price_per_day}</p>
-                  <p>Price for stay {propertyBookingQuery.data.data[chosenPayment].price_for_stay}</p>
-                  <p>Site Fees {propertyBookingQuery.data.data[chosenPayment].price_for_stay}</p>
+                  <p>
+                    Property Id{" "}
+                    {propertyBookingQuery.data.data[chosenPayment].property_id}
+                  </p>
+                  <p>
+                    Check in{" "}
+                    {
+                      propertyBookingQuery.data.data[chosenPayment]
+                        .check_in_date
+                    }
+                  </p>
+                  <p>
+                    Check out{" "}
+                    {
+                      propertyBookingQuery.data.data[chosenPayment]
+                        .check_out_date
+                    }
+                  </p>
+                  <p>
+                    Price per day{" "}
+                    {
+                      propertyBookingQuery.data.data[chosenPayment]
+                        .price_per_day
+                    }
+                  </p>
+                  <p>
+                    Price for stay{" "}
+                    {
+                      propertyBookingQuery.data.data[chosenPayment]
+                        .price_for_stay
+                    }
+                  </p>
+                  <p>
+                    Site Fees{" "}
+                    {
+                      propertyBookingQuery.data.data[chosenPayment]
+                        .price_for_stay
+                    }
+                  </p>
                 </div>
               )}
             </StyledPopUp>

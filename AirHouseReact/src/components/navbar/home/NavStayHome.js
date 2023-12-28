@@ -27,7 +27,8 @@ const StyledContainer = styled(motion.div)`
   margin-top: 0.2rem;
   background-color: #ebebeb;
 
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 
   & .button {
     text-align: left;
@@ -219,7 +220,8 @@ const StyledSearchButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+      rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   }
 `;
 
@@ -277,15 +279,15 @@ function formatDateToString(date) {
   return [year, month, day].join("-");
 }
 
-export default function NavStayHome({ isShow }) {
+export default function NavStayHome({ isShow, clickOut }) {
   const provinceQuery = ProvinceQuery();
   const { state, dispatch, ACTIONS } = useStateContext();
   const [clickDate, setClickDate] = useState(false);
   const [clickGuest, setClickGuest] = useState(false);
-  const [dateValue, setDateValue] = useState([]);
+  const [dateValue, setDateValue] = useState([state.checkIn, state.checkOut]);
   const [active, setActive] = useState([false, false, false]);
 
-  const [province, setProvince] = useState("none");
+  const [province, setProvince] = useState(state.province);
 
   const [adultCount, setAdultCount] = useState(1);
   const [childrenCount, setChildrenCount] = useState(0);
@@ -315,7 +317,12 @@ export default function NavStayHome({ isShow }) {
       dispatch({ type: ACTIONS.CHANGE_CHECK_OUT, next: dateValue[0] });
     }
 
-    dispatch({ type: ACTIONS.CHANGE_ACCOMMODATE, next: adultCount + childrenCount });
+    dispatch({
+      type: ACTIONS.CHANGE_ACCOMMODATE,
+      next: adultCount + childrenCount,
+    });
+
+    clickOut();
   };
 
   useEffect(() => {
@@ -335,11 +342,23 @@ export default function NavStayHome({ isShow }) {
       }}
       $isShow={isShow}
     >
-      <StyledWhere $click={active[0]} onClick={() => changeActive(0)} className="button">
+      <StyledWhere
+        $click={active[0]}
+        onClick={() => changeActive(0)}
+        className="button"
+      >
         <StyledOption>
           <p>Where</p>
           {province == "none" && <p>Search destinations</p>}
-          {province != "none" && <p>{provinceQuery.data.find((provinceItem) => provinceItem.code == province).full_name}</p>}
+          {province != "none" && (
+            <p>
+              {
+                provinceQuery.data.find(
+                  (provinceItem) => provinceItem.code == province
+                ).full_name
+              }
+            </p>
+          )}
         </StyledOption>
         {province != "none" && (
           <button onClick={() => setProvince("none")} className="close">
@@ -349,7 +368,10 @@ export default function NavStayHome({ isShow }) {
         {active[0] && (
           <StyledWherePopUp>
             <h3>Search By Province</h3>
-            <select value={province} onChange={(ev) => setProvince(ev.target.value)}>
+            <select
+              value={province}
+              onChange={(ev) => setProvince(ev.target.value)}
+            >
               <option>None</option>
               {provinceQuery.data.map((province, index) => {
                 return (
@@ -362,7 +384,11 @@ export default function NavStayHome({ isShow }) {
           </StyledWherePopUp>
         )}
       </StyledWhere>
-      <StyledCheckIn onClick={() => changeActive(1)} $click={active[1]} className="button">
+      <StyledCheckIn
+        onClick={() => changeActive(1)}
+        $click={active[1]}
+        className="button"
+      >
         <StyledOption>
           <p>Check in</p>
           {!dateValue[0] && <p>Add dates</p>}
@@ -387,7 +413,11 @@ export default function NavStayHome({ isShow }) {
           </StyledDatePopUp>
         )}
       </StyledCheckIn>
-      <StyledCheckOut onClick={() => changeActive(2)} $click={active[2]} className="button">
+      <StyledCheckOut
+        onClick={() => changeActive(2)}
+        $click={active[2]}
+        className="button"
+      >
         <StyledOption>
           <p>Check out</p>
           {!dateValue[1] && <p>Add dates</p>}
@@ -399,7 +429,11 @@ export default function NavStayHome({ isShow }) {
           </button>
         )}
       </StyledCheckOut>
-      <StyledWho onClick={() => changeActive(3)} $click={active[3]} className="button">
+      <StyledWho
+        onClick={() => changeActive(3)}
+        $click={active[3]}
+        className="button"
+      >
         <StyledOption>
           <p>Who</p>
           <p>Add guests</p>

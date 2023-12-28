@@ -151,7 +151,7 @@ class UserController extends Controller
     {
         $user = User::where('email', $email)->first();
         if ($user) {
-            $user->email_verified_at = now();
+            $user->email_verify_at = now();
             $user->save();
             return response()->json([
                 'message' => "ok"

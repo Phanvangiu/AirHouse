@@ -196,6 +196,11 @@ const StyledSubmitButton = styled.button`
     font-weight: 600;
     background-color: white;
   }
+
+  &:disabled {
+    color: rgba(255, 255, 255, 0.4);
+    cursor: not-allowed;
+  }
 `;
 
 const StyledExceptionList = styled.div`
@@ -234,7 +239,9 @@ const formatDate = (dateObj) => {
   const month = dateObj.getMonth() + 1;
   const year = dateObj.getFullYear();
 
-  return `${year}-${month < 10 ? "0" + month : month}-${date < 10 ? "0" + date : date}`;
+  return `${year}-${month < 10 ? "0" + month : month}-${
+    date < 10 ? "0" + date : date
+  }`;
 };
 
 const listDate = (start, end) => {
@@ -258,9 +265,12 @@ const Calendar = () => {
   const updateMutation = UpdatePropertyMutation();
   const [active, setActive] = useState([true, false]);
   const [value, setValue] = useState(new Date());
-  const [state, dispatch, ACTIONS, onSetActive, onSetAvailable] = useOutletContext();
+  const [state, dispatch, ACTIONS, onSetActive, onSetAvailable] =
+    useOutletContext();
   const [exceptionValue, setExceptionValue] = useState();
-  const [exceptionValueArray, setExceptionValueArray] = useState(state.exceptionDate);
+  const [exceptionValueArray, setExceptionValueArray] = useState(
+    state.exceptionDate
+  );
 
   const [calendar, setCalendar] = useState();
 
@@ -297,7 +307,9 @@ const Calendar = () => {
 
     const formData = new FormData();
     formData.append("name", state.propertyName);
-    state.amenities.forEach((amenity) => formData.append("amenities[]", amenity));
+    state.amenities.forEach((amenity) =>
+      formData.append("amenities[]", amenity)
+    );
     formData.append("description", state.description);
     formData.append("about_place", state.aboutPlace); //
     formData.append("place_great_for", state.placeGreatFor); //
@@ -309,13 +321,21 @@ const Calendar = () => {
     formData.append("property_type_id", state.propertyTypeId);
     formData.append("room_type_id", state.roomTypeId);
     formData.append("category_id", state.categoryId);
-    formData.append("provinces_id", state.provinces_id < 10 ? "0" + Number(state.provinces_id) : state.provinces_id);
+    formData.append(
+      "provinces_id",
+      state.provinces_id < 10
+        ? "0" + Number(state.provinces_id)
+        : state.provinces_id
+    );
     formData.append("districts_id", state.district_id);
     formData.append("address", state.address);
     formData.append("bedroom_count", state.bedroomCount);
     formData.append("bathroom_count", state.bathRoomCount);
     formData.append("accomodates_count", state.accomodatesCount);
-    formData.append("start_date", formatDateToString(new Date(state.startDate)));
+    formData.append(
+      "start_date",
+      formatDateToString(new Date(state.startDate))
+    );
     formData.append("end_date", formatDateToString(new Date(state.endDate)));
     formData.append("base_price", state.baseprice); //
     formData.append("booking_type", state.bookingType); //
@@ -328,7 +348,9 @@ const Calendar = () => {
     state.exceptionDate.forEach((exception) => {
       formData.append("exception[]", JSON.stringify(exception));
     });
-    Array.from(state.images).forEach((image) => formData.append("images[]", image));
+    Array.from(state.images).forEach((image) =>
+      formData.append("images[]", image)
+    );
     formData.append("video", state.video); //
 
     if (state.property_id) {
@@ -368,19 +390,31 @@ const Calendar = () => {
     ev.preventDefault();
     setExceptionValueArray([
       ...exceptionValueArray,
-      { start: formatDate(new Date(exceptionValue[0])), end: formatDate(new Date(exceptionValue[1])) },
+      {
+        start: formatDate(new Date(exceptionValue[0])),
+        end: formatDate(new Date(exceptionValue[1])),
+      },
     ]);
 
     dispatch({
       type: ACTIONS.CHANGE_EXCEPTION_DATE,
-      next: [...exceptionValueArray, { start: formatDate(new Date(exceptionValue[0])), end: formatDate(new Date(exceptionValue[1])) }],
+      next: [
+        ...exceptionValueArray,
+        {
+          start: formatDate(new Date(exceptionValue[0])),
+          end: formatDate(new Date(exceptionValue[1])),
+        },
+      ],
     });
   };
 
   const onExceptionDate = ({ date }) => {
     let arrExceptionDate = [];
     for (let i = 0; i < exceptionValueArray.length; i++) {
-      arrExceptionDate = [...arrExceptionDate, ...listDate(exceptionValueArray[i].start, exceptionValueArray[i].end)];
+      arrExceptionDate = [
+        ...arrExceptionDate,
+        ...listDate(exceptionValueArray[i].start, exceptionValueArray[i].end),
+      ];
     }
 
     const isDisabled = arrExceptionDate.some((bookedDate) => {
@@ -392,22 +426,42 @@ const Calendar = () => {
 
   const onDeleteException = (ev, dateIndex) => {
     ev.preventDefault();
-    setExceptionValueArray(exceptionValueArray.filter((exception, index) => index != dateIndex));
-    dispatch({ type: ACTIONS.CHANGE_EXCEPTION_DATE, next: exceptionValueArray.filter((exception, index) => index != dateIndex) });
+    setExceptionValueArray(
+      exceptionValueArray.filter((exception, index) => index != dateIndex)
+    );
+    dispatch({
+      type: ACTIONS.CHANGE_EXCEPTION_DATE,
+      next: exceptionValueArray.filter(
+        (exception, index) => index != dateIndex
+      ),
+    });
   };
 
   const onHandleChangeException = (date) => {
     let selectedArr = [];
 
     if (date[1] == null) {
-      selectedArr = [...listDate(formatDate(new Date(date[0])), formatDate(new Date(date[0])))];
+      selectedArr = [
+        ...listDate(
+          formatDate(new Date(date[0])),
+          formatDate(new Date(date[0]))
+        ),
+      ];
     } else {
-      selectedArr = [...listDate(formatDate(new Date(date[0])), formatDate(new Date(date[1])))];
+      selectedArr = [
+        ...listDate(
+          formatDate(new Date(date[0])),
+          formatDate(new Date(date[1]))
+        ),
+      ];
     }
 
     let arrExceptionDate = [];
     for (let i = 0; i < exceptionValueArray.length; i++) {
-      arrExceptionDate = [...arrExceptionDate, ...listDate(exceptionValueArray[i].start, exceptionValueArray[i].end)];
+      arrExceptionDate = [
+        ...arrExceptionDate,
+        ...listDate(exceptionValueArray[i].start, exceptionValueArray[i].end),
+      ];
     }
 
     let isWrong = false;
@@ -436,10 +490,17 @@ const Calendar = () => {
       </StyledSecion1>
       <StyledSecion2>
         <StyledHeader>
-          <StyledHeaderButton $style={active[0]} onClick={() => changeActive(0)}>
+          <StyledHeaderButton
+            $style={active[0]}
+            onClick={() => changeActive(0)}
+          >
             Calender
           </StyledHeaderButton>
-          <StyledHeaderButton disabled={!state.endDate} $style={active[1]} onClick={() => changeActive(1)}>
+          <StyledHeaderButton
+            disabled={!state.endDate}
+            $style={active[1]}
+            onClick={() => changeActive(1)}
+          >
             Exception Date
           </StyledHeaderButton>
         </StyledHeader>
@@ -465,9 +526,15 @@ const Calendar = () => {
               <StyledInput
                 value={state.minimumStay}
                 onChange={(ev) => {
-                  dispatch({ type: ACTIONS.CHANGE_MINIMUM_STAY, next: ev.target.value });
+                  dispatch({
+                    type: ACTIONS.CHANGE_MINIMUM_STAY,
+                    next: ev.target.value,
+                  });
                   if (state.minimumStay >= state.maximumStay) {
-                    dispatch({ type: ACTIONS.CHANGE_MAXIMUM_STAY, next: Number(state.minimumStay) + 1 });
+                    dispatch({
+                      type: ACTIONS.CHANGE_MAXIMUM_STAY,
+                      next: Number(state.minimumStay) + 1,
+                    });
                   }
                 }}
                 type="number"
@@ -480,7 +547,10 @@ const Calendar = () => {
                 min={state.minimumStay}
                 value={state.maximumStay}
                 onChange={(ev) => {
-                  dispatch({ type: ACTIONS.CHANGE_MAXIMUM_STAY, next: ev.target.value });
+                  dispatch({
+                    type: ACTIONS.CHANGE_MAXIMUM_STAY,
+                    next: ev.target.value,
+                  });
                 }}
                 type="number"
               />
@@ -489,7 +559,10 @@ const Calendar = () => {
               <label>Status</label>
               <StyledSelect
                 onChange={(ev) => {
-                  dispatch({ type: ACTIONS.CHANGE_STATUS, next: ev.target.value });
+                  dispatch({
+                    type: ACTIONS.CHANGE_STATUS,
+                    next: ev.target.value,
+                  });
                 }}
                 value={state.property_status}
               >
@@ -517,15 +590,23 @@ const Calendar = () => {
               onChange={onHandleChangeException}
               tileDisabled={onExceptionDate}
             />
-            <StyledSubmitButton onClick={onAddExceptionDate} disabled={!exceptionValue?.[1]}>
-              Submit
+            <StyledSubmitButton
+              onClick={onAddExceptionDate}
+              disabled={
+                !exceptionValue?.[1] ||
+                propertyMutation.isIdle ||
+                updateMutation.isIdle
+              }
+            >
+              Submit {propertyMutation}
             </StyledSubmitButton>
             <StyledExceptionContainer>
               {exceptionValueArray.map((exceptionObj, index) => {
                 return (
                   <StyledExceptionList key={index}>
                     <span>
-                      {exceptionObj.start} <span className="to">to</span> {exceptionObj.end}
+                      {exceptionObj.start} <span className="to">to</span>{" "}
+                      {exceptionObj.end}
                     </span>
                     <button onClick={(ev) => onDeleteException(ev, index)}>
                       <FontAwesomeIcon icon={faClose} />{" "}

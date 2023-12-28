@@ -116,11 +116,9 @@ function UserDropDown({ blur, showDropDown }) {
           {userQuery.isSuccess || <button onClick={onShowSignUpHandler}>Signup</button>}
           {userQuery.isSuccess && <button onClick={onDashboardHandler}>Dashboard</button>}
           {userQuery.isSuccess || <button onClick={onShowLoginHandler}>Log in</button>}
-          {userQuery.isSuccess && <button onClick={onLogoutHandler}>Log out</button>}
           {userQuery.isSuccess && <button onClick={onListingHandler}>Listing</button>}
           {userQuery.isSuccess && <button onClick={onTripHandler}>My Trips</button>}
-          <button>AirHouse your home</button>
-          <button onClick={() => alert("ngo dinh tan")}>Help Center</button>
+          {userQuery.isSuccess && <button onClick={onLogoutHandler}>Log out</button>}
         </StyledDropDownContainer>
       )}
       {showSignUp && <SignUpContainer setShowSignUp={setShowSignUp} />}

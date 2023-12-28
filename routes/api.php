@@ -158,7 +158,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::get('/get-to-day-transaction', [TransactionController::class, 'getTodayTransaction']);
 });
 
-Route::get('login-admin', [UserController::class, 'loginAdmin']);
+Route::post('login-admin', [UserController::class, 'loginAdmin']);
 
 Route::get('/verify/{email}', [UserController::class, 'verify'])->name('verify-email');
 

@@ -40,9 +40,6 @@ export default function () {
             Profile Photos
           </Link>
         </li>
-        <li>Trust & Verification</li>
-        <li>Review About You</li>
-        <li>Review By You</li>
       </ul>
     </Box>
   );

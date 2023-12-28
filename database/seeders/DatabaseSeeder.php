@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
 use App\Models\Amenity;
+use App\Models\Booking;
 use App\Models\Property;
 use App\Models\Transaction;
 use Illuminate\Support\Arr;
@@ -54,21 +55,21 @@ class DatabaseSeeder extends Seeder
         //     }
         // }
 
-        $amenites = Amenity::pluck('id');
-        $properties = Property::pluck('id');
-        foreach ($properties as $property) {
-            $amenites_array = [];
-            foreach ($amenites as $amenity) {
-                $amenites_array[] = $amenity;
-            }
-            $randomAmenites = array_unique(Arr::random($amenites_array, fake()->numberBetween(10, 20)));
-            foreach ($randomAmenites as $item) {
-                DB::table('property_amenities')->insert([
-                    'property_id' => $property,
-                    'amenity_id' => $item
-                ]);
-            }
-        }
+        // $amenites = Amenity::pluck('id');
+        // $properties = Property::pluck('id');
+        // foreach ($properties as $property) {
+        //     $amenites_array = [];
+        //     foreach ($amenites as $amenity) {
+        //         $amenites_array[] = $amenity;
+        //     }
+        //     $randomAmenites = array_unique(Arr::random($amenites_array, fake()->numberBetween(10, 20)));
+        //     foreach ($randomAmenites as $item) {
+        //         DB::table('property_amenities')->insert([
+        //             'property_id' => $property,
+        //             'amenity_id' => $item
+        //         ]);
+        //     }
+        // }
 
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -82,11 +83,14 @@ class DatabaseSeeder extends Seeder
         ///////////////////////////////////////////////////////////////////////////
 
 
-        // for ($i = 0; $i < 3000000; $i++) {
-        //     //SELECT * FROM `transactions` WHERE `payment_id` LIKE 'PM%'
+        // for ($i = 0; $i < 300000; $i++) {
+        //     // SELECT * FROM `transactions` WHERE `payment_id` LIKE 'PM%'
         //     Transaction::factory()->state([
         //         'payment_id' => "PM$i"
         //     ])->count(1)->create();
         // }
+
+
+        Booking::factory()->count(100000)->create();
     }
 }

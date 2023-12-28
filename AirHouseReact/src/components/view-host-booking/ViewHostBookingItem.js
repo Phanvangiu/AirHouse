@@ -19,7 +19,8 @@ const StyledContainer = styled.div`
   grid-auto-rows: 12.5rem;
 
   column-gap: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   padding: 10px;
   line-height: 20px;
 
@@ -49,6 +50,7 @@ const StyledContainer = styled.div`
 
 const StyledFirst = styled.div`
   width: 100%;
+  cursor: pointer;
   & img {
     object-fit: cover;
     width: 100%;
@@ -70,6 +72,11 @@ const StyledSecond = styled.div`
   h3 {
     font-size: 16px;
     font-weight: 600;
+    cursor: pointer;
+  }
+
+  h3:hover {
+    text-decoration: underline;
   }
 
   > div {
@@ -111,6 +118,10 @@ const StyledThird = styled.div`
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.5rem;
+
+  & .avatar{
+    cursor: pointer;
+  }
 
   & p {
     font-size: 14px;
@@ -205,14 +216,21 @@ export default function ViewHostBookingItem({ data }) {
     });
   };
 
+  const onClickProperty = () => {
+    navigate({
+      pathname: "/user/booking-detail",
+      search: `?property_id=${data.property.id}`,
+    });
+  };
+
   return (
     <>
       <StyledContainer>
-        <StyledFirst className="first">
+        <StyledFirst onClick={onClickProperty} className="first">
           <img src={data.property.images[0].image} />
         </StyledFirst>
         <StyledSecond>
-          <h3>
+          <h3 onClick={onClickProperty}>
             {data.property.name} - {data.user.id}
           </h3>
           <div>
@@ -221,7 +239,8 @@ export default function ViewHostBookingItem({ data }) {
               {data.property.address}
             </p>
             <p>
-              <FontAwesomeIcon className="icon" icon={faCalendar} /> From {data.check_in_date} <span className="to">to</span>
+              <FontAwesomeIcon className="icon" icon={faCalendar} /> From{" "}
+              {data.check_in_date} <span className="to">to</span>
               {data.check_out_date}
             </p>
             <p>
@@ -231,11 +250,37 @@ export default function ViewHostBookingItem({ data }) {
           </div>
         </StyledSecond>
         <StyledThird className="third">
-          <Avatar src={data.user.image} size="50px" textSizeRatio={3} round={true} name={data.user.first_name} />
+          <Avatar
+            onClick={() =>
+              window.open(`/profile/dashboard/${data.user.id}`, "_blank")
+            }
+            className="avatar"
+            src={data.user.image}
+            size="50px"
+            textSizeRatio={3}
+            round={true}
+            name={data.user.first_name}
+          />
           {data.booking_status == "waiting" && <button>Accept</button>}
           {data.booking_status == "waiting" && <button>Deny</button>}
-          {(data.booking_status == "accepted" || data.booking_status == "success") && <button>Payment Detail</button>}
-          <button>Send Message</button>
+          {(data.booking_status == "accepted" ||
+            data.booking_status == "success") && (
+            <button>Payment Detail</button>
+          )}
+          <button
+            onClick={() => {
+              navigate("/user/chat/", {
+                replace: false,
+                state: {
+                  user_Email: data.user.email,
+                  first_Name: data.user.first_name,
+                  last_Name: data.user.last_name,
+                },
+              });
+            }}
+          >
+            Send Message
+          </button>
         </StyledThird>
       </StyledContainer>
       {showMessage ? (

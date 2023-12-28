@@ -109,7 +109,7 @@ export default function NavTopHome() {
       </NavBarContainer>
       {state.isShow && <StyledOverlay onClick={clickOut} />}
       <StyledPopUp $height={state.isShow}>
-        <AnimatePresence>{state.isShow && <NavStayHome isShow={state.isShow} />}</AnimatePresence>
+        <AnimatePresence>{state.isShow && <NavStayHome clickOut={clickOut} isShow={state.isShow} />}</AnimatePresence>
       </StyledPopUp>
     </>
   );

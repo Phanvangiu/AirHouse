@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { UserQuery } from "api/userApi";
 import NavHome from "components/navbar/home/NavHome";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useLocation } from "react-router-dom";
 import FooterBar from "components/footer/home/FooterBar";
 import FooterIndex from "components/footer/host-creation/FooterIndex";
@@ -18,10 +18,17 @@ import { CategoryValueQuery } from "api/blogCategoryApi";
 
 const StyledContainer = styled.div`
   font-family: "Poppins", sans-serif;
-  /* display: flex;
-  justify-content: space-between;
-  min-height: 100vh;
-  flex-direction: column; */
+
+  ${(props) => {
+    if (props.$home) {
+      return css`
+        display: flex;
+        justify-content: space-between;
+        min-height: 100vh;
+        flex-direction: column;
+      `;
+    }
+  }}
 `;
 
 const StyledBody = styled.div`
@@ -53,13 +60,27 @@ export default function DefaultLayout() {
     localStorage.setItem("ACCESS_TOKEN", userQuery.data.token);
   }
 
+  const compareString = (str1, str2) => {
+    let minLength = str1.length;
+    if (str2.length < minLength) {
+      minLength = str2.length;
+    }
+
+    return str1.substring(0, minLength) == str2.substring(0, minLength);
+  };
+
+
   return (
-    <StyledContainer>
+    <StyledContainer $home={location.pathname == "/"}>
       {location.pathname === "/" ? <NavHome /> : <NavTopHome />}
       <StyledBody>
         <Outlet />
       </StyledBody>
-      {location.pathname === "/" ? <FooterBar variant={"home"} /> : <FooterIndex />}
+      {location.pathname === "/" ? (
+        <FooterBar variant={"home"} />
+      ) : (
+        <FooterIndex />
+      )}
     </StyledContainer>
   );
 }

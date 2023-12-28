@@ -134,7 +134,9 @@ export const UserIdQuery = (id) => {
 };
 
 const checkEmailUnique = async (email) => {
-  const response = await axiosClient.get("check-email-unique", { params: { email: email } });
+  const response = await axiosClient.get("check-email-unique", {
+    params: { email: email },
+  });
   return response.data;
 };
 
@@ -245,4 +247,26 @@ export const GuestViewUserQuery = () => {
   });
 
   return userQuery;
+};
+
+const onAdminLogin = async (payload) => {
+  const response = await axiosClient.post("login-admin", payload);
+  return response.data;
+};
+
+export const AdminLoginMutation = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const mutation = useMutation({
+    mutationFn: onAdminLogin,
+    onSuccess: (data) => {
+      if (data.user.user_type == 0) {
+        localStorage.setItem("ACCESS_TOKEN", data.token);
+        queryClient.invalidateQueries({ queryKey: ["user"] });
+        navigate("/admin");
+      }
+    },
+  });
+
+  return mutation;
 };

@@ -17,7 +17,9 @@ const formatDate = (dateObj) => {
   const month = dateObj.getMonth() + 1;
   const year = dateObj.getFullYear();
 
-  return `${year}-${month < 10 ? "0" + month : month}-${date < 10 ? "0" + date : date}`;
+  return `${year}-${month < 10 ? "0" + month : month}-${
+    date < 10 ? "0" + date : date
+  }`;
 };
 
 const listDate = (start, end) => {
@@ -35,8 +37,14 @@ const listDate = (start, end) => {
   return allDatesInRange;
 };
 
-const CalendarViewHost = ({ data, value, setValue, onHandleChange, disabledBookDate }) => {
-  const {pageWidth} = useStateContext();
+const CalendarViewHost = ({
+  data,
+  value,
+  setValue,
+  onHandleChange,
+  disabledBookDate,
+}) => {
+  const { pageWidth } = useStateContext();
 
   const { start_date, end_date, minimum_stay, maximum_stay } = data;
 
@@ -48,7 +56,9 @@ const CalendarViewHost = ({ data, value, setValue, onHandleChange, disabledBookD
       selectRange={true}
       returnValue={"range"}
       view={"month"}
-      minDate={new Date(start_date)}
+      minDate={
+        new Date(start_date) > new Date() ? new Date(start_date) : new Date()
+      }
       maxDate={new Date(end_date)}
       maxDetail={"month"}
       showDoubleView={false}

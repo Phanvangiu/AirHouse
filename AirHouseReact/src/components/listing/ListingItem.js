@@ -48,6 +48,7 @@ const StyledContainer = styled.div`
 
 const StyledFirst = styled.div`
   width: 100%;
+  cursor: pointer;
   & img {
     object-fit: cover;
     width: 100%;
@@ -186,6 +187,7 @@ export default function ListingItem({ data }) {
   const navigate = useNavigate();
   const [showMessage, setShowMessage] = useState(false);
 
+
   const onClickShowMessage = () => {
     setShowMessage(true);
   };
@@ -204,15 +206,22 @@ export default function ListingItem({ data }) {
     });
   };
 
+  const onClickProperty = () => {
+    navigate({
+      pathname: "/property",
+      search: `?id=${data.id}`,
+    });
+  }
+
   return (
     <>
       <StyledContainer>
-        <StyledFirst className="first">
+        <StyledFirst onClick={onClickProperty} className="first">
           <img src={data.images[0].image} />
         </StyledFirst>
         <StyledSecond>
           <h3>
-            {data.category.name} in {data.province.full_name}
+            {data.category.name} in {data.province.full_name} - {data.id}
           </h3>
           <div>
             <p>

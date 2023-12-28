@@ -3,10 +3,17 @@ import styled from "styled-components";
 import { GuestViewUserQuery } from "../../api/userApi";
 import Skeleton from "react-loading-skeleton";
 import Avatar from "react-avatar";
-import { faStar, faCheck, faTimes, faRectangleList, faMoneyCheckDollar } from "@fortawesome/free-solid-svg-icons";
+import {
+  faStar,
+  faCheck,
+  faTimes,
+  faRectangleList,
+  faMoneyCheckDollar,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css } from "styled-components";
 import { useState } from "react";
+import Loading from "components/Loading";
 
 const StyleCateBlock = styled.div`
   display: block;
@@ -179,7 +186,7 @@ const StyledIdentity = styled.div`
 `;
 
 export default function HostViewDashBoard() {
-  const { data, isSuccess } = GuestViewUserQuery();
+  const { data, isSuccess, isLoading } = GuestViewUserQuery();
   const bookingsCount = data?.bookFromOthers;
   const tripsCount = data?.user?.bookings?.length || 0;
   console.log(data);
@@ -193,20 +200,38 @@ export default function HostViewDashBoard() {
     return formattedDate;
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       {isSuccess ? (
         <StyledLayout>
           <StyledLeft>
-            <Avatar src={data.user.image} size="12rem" textSizeRatio={2} round={true} name={data.user.first_name} />
+            <Avatar
+              src={data.user.image}
+              size="12rem"
+              textSizeRatio={2}
+              round={true}
+              name={data.user.first_name}
+            />
             <div>
               {data.user.email_verify_at === null ? (
                 <StyledIdentity>
-                  <FontAwesomeIcon icon={faTimes} style={{ color: "red", fontSize: "1.5rem" }} /> Identity Unverified
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    style={{ color: "red", fontSize: "1.5rem" }}
+                  />{" "}
+                  Identity Unverified
                 </StyledIdentity>
               ) : (
                 <div>
-                  <FontAwesomeIcon icon={faCheck} style={{ color: "green", fontSize: "1.5rem" }} /> Identity Verified
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    style={{ color: "green", fontSize: "1.5rem" }}
+                  />{" "}
+                  Identity Verified
                 </div>
               )}
             </div>
@@ -214,13 +239,19 @@ export default function HostViewDashBoard() {
           <StyledRight>
             <StyledTopCard>
               <div>
-                <FontAwesomeIcon icon={faRectangleList} style={{ color: "violet", fontSize: "2.5rem" }} />
+                <FontAwesomeIcon
+                  icon={faRectangleList}
+                  style={{ color: "violet", fontSize: "2.5rem" }}
+                />
                 <p>
                   <span>My Bookings</span> <span>{bookingsCount}</span>
                 </p>
               </div>
               <div>
-                <FontAwesomeIcon icon={faMoneyCheckDollar} style={{ color: "lightgreen", fontSize: "2.9rem" }} />
+                <FontAwesomeIcon
+                  icon={faMoneyCheckDollar}
+                  style={{ color: "lightgreen", fontSize: "2.9rem" }}
+                />
                 <p>
                   <span>My Rentings</span> <span>{tripsCount}</span>
                 </p>
@@ -231,7 +262,9 @@ export default function HostViewDashBoard() {
               <p style={{ fontSize: "1.7rem" }}>
                 Hi, I'm {data.user.first_name} {data.user.last_name}
               </p>
-              <p style={{ fontSize: "0.8rem", color: "gray" }}>Member since {formatCreatedAt(data.user.updated_at)} </p>
+              <p style={{ fontSize: "0.8rem", color: "gray" }}>
+                Member since {formatCreatedAt(data.user.updated_at)}{" "}
+              </p>
               <hr style={{ borderColor: "lightgrey", opacity: "0.3" }} />
             </div>
             <div>
@@ -240,14 +273,26 @@ export default function HostViewDashBoard() {
               </p>
               <p style={{ fontSize: "0.8rem" }}>{data.user.about}</p>
             </div>
-            <StyledReview>Review ({data?.user?.ratings?.length || 0})</StyledReview>
+            <StyledReview>
+              Review ({data?.user?.ratings?.length || 0})
+            </StyledReview>
             <div>
               <StyleCateBlock>
                 <StyleTabTop>
-                  <StyleTabButton name="" value="1" onClick={() => setTab(1)} active={tab === 1}>
+                  <StyleTabButton
+                    name=""
+                    value="1"
+                    onClick={() => setTab(1)}
+                    active={tab === 1}
+                  >
                     Review From Guests
                   </StyleTabButton>
-                  <StyleTabButton name="" value="2" onClick={() => setTab(2)} active={tab === 2}>
+                  <StyleTabButton
+                    name=""
+                    value="2"
+                    onClick={() => setTab(2)}
+                    active={tab === 2}
+                  >
                     Review From Hosts
                   </StyleTabButton>
                 </StyleTabTop>
@@ -265,7 +310,10 @@ export default function HostViewDashBoard() {
                                   key={index}
                                   icon={faStar}
                                   style={{
-                                    color: index < item.start ? "#ffcc00" : "#c0c0c0",
+                                    color:
+                                      index < item.start
+                                        ? "#ffcc00"
+                                        : "#c0c0c0",
                                   }}
                                 />
                               ))}

@@ -31,7 +31,7 @@ export default function CheckoutForm({ data }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
 
-  const amount = data.booking.price_for_stay + data.booking.site_fees;
+  const amount = Number(data.booking.price_for_stay) + Number(data.booking.site_fees);
   const booking_id = data.booking.id;
   const booking_status = data.booking.booking_status;
 

@@ -6,8 +6,10 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Booking;
 use App\Models\Property;
+use App\Mail\MailDenyReview;
 use App\Models\PropertyType;
 use Illuminate\Http\Request;
+use App\Mail\MailAcceptReview;
 use App\Mail\MailCreateBooking;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -91,6 +93,8 @@ class BookingController extends Controller
                 $property = Property::where('id', $request->property_id)->first();
                 if ($property->booking_type == 'instantly') {
                     $booking->booking_status = 'accepted';
+                    Mail::to($user->email)->send(new MailCreateBooking($user, $booking, $property));
+                    Mail::to($user->email)->send(new MailAcceptReview($user, $booking, $property));
                 } else {
                     $booking->booking_status = 'waiting';
                 }
@@ -184,6 +188,9 @@ class BookingController extends Controller
         $booking->booking_status = 'denied';
         $booking->save();
 
+        $user = User::where('id',$booking->user_id)->first();
+        $property  = Property::find('id', $booking->property_id);
+        Mail::to($user->email)->send(new MailDenyReview($user, $booking, $property));
         return response($booking);
     }
 
@@ -205,10 +212,17 @@ class BookingController extends Controller
         foreach ($violateBooking as $booking) {
             $booking->booking_status = 'denied';
             $booking->save();
+            $user= User::where('id',$booking->user_id)->first();
+            $property = Property::find($booking->property_id);
+            Mail::to($user->email)->send(new MailDenyReview($user, $booking, $property));
         }
 
         $booking->booking_status = 'accepted';
         $booking->save();
+
+        $user= User::where('id',$booking->user_id)->first();
+        $property = Property::find($booking->property_id);
+        Mail::to($user->email)->send(new MailAcceptReview($user, $booking, $property));
 
         return response($booking);
     }
@@ -222,7 +236,7 @@ class BookingController extends Controller
 
         DB::statement("SET SQL_MODE=''");
         $bookings = DB::table('bookings')
-            ->select('bookings.id', 'bookings.property_id', 'bookings.user_id as id_user', 'bookings.check_in_date', 'bookings.check_out_date', 'property_images.image', 'properties.user_id', 'properties.name as Property_Name', 'properties.address as Property_Address', 'users.image as user_image', 'users.first_name as user_firstName',  'users.last_name as user_lastName', 'users.email as user_Email', 'provinces.full_name as province', 'districts.full_name as districts', 'bookings.booking_status as status')
+            ->select('bookings.id', 'bookings.site_fees', 'bookings.price_for_stay', 'bookings.property_id', 'bookings.user_id as id_user', 'bookings.check_in_date', 'bookings.check_out_date', 'property_images.image', 'properties.user_id', 'properties.name as Property_Name', 'properties.address as Property_Address', 'users.image as user_image', 'users.first_name as user_firstName',  'users.last_name as user_lastName', 'users.email as user_Email', 'provinces.full_name as province', 'districts.full_name as districts', 'bookings.booking_status as status', 'bookings.created_at')
             ->join('property_images', 'property_images.property_id', '=', 'bookings.property_id')
             ->join('properties', 'properties.id', '=', 'bookings.property_id')
             ->join('users', 'users.id', '=', 'properties.user_id')
@@ -235,7 +249,7 @@ class BookingController extends Controller
         if ($status == 'accepted') {
             DB::statement("SET SQL_MODE=''");
             $bookings = DB::table('bookings')
-                ->select('bookings.id', 'bookings.property_id', 'bookings.user_id as id_user', 'bookings.check_in_date', 'bookings.check_out_date', 'property_images.image', 'properties.user_id', 'properties.name as Property_Name', 'properties.address as Property_Address', 'users.image as user_image', 'users.first_name as user_firstName',  'users.last_name as user_lastName', 'users.email as user_Email', 'provinces.full_name as province', 'districts.full_name as districts',  'bookings.booking_status as status', 'bookings.created_at')
+                ->select('bookings.id', 'bookings.site_fees', 'bookings.price_for_stay', 'bookings.property_id', 'bookings.user_id as id_user', 'bookings.check_in_date', 'bookings.check_out_date', 'property_images.image', 'properties.user_id', 'properties.name as Property_Name', 'properties.address as Property_Address', 'users.image as user_image', 'users.first_name as user_firstName',  'users.last_name as user_lastName', 'users.email as user_Email', 'provinces.full_name as province', 'districts.full_name as districts',  'bookings.booking_status as status', 'bookings.created_at')
                 ->join('property_images', 'property_images.property_id', '=', 'bookings.property_id')
                 ->join('properties', 'properties.id', '=', 'bookings.property_id')
                 ->join('users', 'users.id', '=', 'properties.user_id')
@@ -250,7 +264,7 @@ class BookingController extends Controller
         if ($status == 'success') {
             DB::statement("SET SQL_MODE=''");
             $bookings = DB::table('bookings')
-                ->select('bookings.id', 'bookings.property_id', 'bookings.user_id as id_user', 'bookings.check_in_date', 'bookings.check_out_date', 'property_images.image', 'properties.user_id', 'properties.name as Property_Name', 'properties.address as Property_Address', 'users.image as user_image', 'users.first_name as user_firstName',  'users.last_name as user_lastName', 'users.email as user_Email', 'provinces.full_name as province', 'districts.full_name as districts')
+                ->select('bookings.id', 'bookings.property_id', 'bookings.user_id as id_user', 'bookings.check_in_date', 'bookings.check_out_date', 'property_images.image', 'properties.user_id', 'properties.name as Property_Name', 'properties.address as Property_Address', 'users.image as user_image', 'users.first_name as user_firstName',  'users.last_name as user_lastName', 'users.email as user_Email', 'provinces.full_name as province', 'districts.full_name as districts', 'bookings.booking_status as status')
                 ->join('property_images', 'property_images.property_id', '=', 'bookings.property_id')
                 ->join('properties', 'properties.id', '=', 'bookings.property_id')
                 ->join('users', 'users.id', '=', 'properties.user_id')
@@ -280,7 +294,7 @@ class BookingController extends Controller
         if ($status == 'waiting') {
             DB::statement("SET SQL_MODE=''");
             $bookings = DB::table('bookings')
-                ->select('bookings.id', 'bookings.property_id', 'bookings.user_id as id_user', 'bookings.check_in_date', 'bookings.check_out_date', 'property_images.image', 'properties.user_id', 'properties.name as Property_Name', 'properties.address as Property_Address', 'users.image as user_image', 'users.first_name as user_firstName',  'users.last_name as user_lastName', 'users.email as user_Email', 'provinces.full_name as province', 'districts.full_name as districts')
+                ->select('bookings.id', 'bookings.property_id', 'bookings.user_id as id_user', 'bookings.check_in_date', 'bookings.check_out_date', 'property_images.image', 'properties.user_id', 'properties.name as Property_Name', 'properties.address as Property_Address', 'users.image as user_image', 'users.first_name as user_firstName',  'users.last_name as user_lastName', 'users.email as user_Email', 'provinces.full_name as province', 'districts.full_name as districts', 'bookings.booking_status as status')
                 ->join('property_images', 'property_images.property_id', '=', 'bookings.property_id')
                 ->join('properties', 'properties.id', '=', 'bookings.property_id')
                 ->join('users', 'users.id', '=', 'properties.user_id')

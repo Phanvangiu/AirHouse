@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\User;
 use Ramsey\Uuid\Uuid;
 use App\Models\Amenity;
 use App\Models\Property;
 use Illuminate\Http\Request;
 use App\Models\PropertyImage;
+use App\Mail\MailDenyProperty;
 use App\Models\PropertyAmenity;
+use App\Mail\MailAcceptProperty;
+use App\Mail\MailCreateProperty;
+use Illuminate\Support\Facades\Mail;
 use App\Models\PropertyExceptionDate;
 use Illuminate\Support\Facades\Storage;
 
@@ -108,6 +113,8 @@ class PropertyController extends Controller
                 $newException->save();
             }
         }
+
+        Mail::to($user->email)->send(new MailCreateProperty($user,  $Property));
 
         return response()->json([
             'success' => true,
@@ -243,6 +250,8 @@ class PropertyController extends Controller
         $property->acception_status = 'accept';
         $property->admin_message = $request->message;
         $property->save();
+        $user  = User::where('id',$property->user_id)->first();
+        Mail::to($user->email)->send(new MailAcceptProperty($user,  $property));    
 
         return response([
             'message' => 'accept property'
@@ -261,6 +270,9 @@ class PropertyController extends Controller
         $property->acception_status = 'deny';
         $property->admin_message = $request->message;
         $property->save();
+
+        $user  = User::where('id',$property->user_id)->first();
+        Mail::to($user->email)->send(new MailDenyProperty($user,  $property));
 
         return response([
             'message' => 'deny property'
@@ -302,7 +314,7 @@ class PropertyController extends Controller
         $category = $request->category;
         $property = Property::where('category_id', $category);
         $property = $property->where('acception_status', 'accept');
-        $property = $property->where('property_status', 1);
+        $property = $property->where('property_status', true);
 
         $now = now()->toDateString();
 
@@ -421,7 +433,7 @@ class PropertyController extends Controller
         $category = $request->category;
         $property = Property::with('user', 'category', 'property_type', 'room_type', 'district', 'province', 'amenities', 'images', 'rating', 'exception_date')->where('category_id', $category);
         $property = $property->where('acception_status', 'accept');
-        $property = $property->where('property_status', 1);
+        $property = $property->where('property_status', true);
 
         $now = now()->toDateString();
 
@@ -517,7 +529,7 @@ class PropertyController extends Controller
         $property_id = $request->id;
         $property = Property::with('user', 'category', 'property_type', 'room_type', 'district', 'province', 'amenities', 'images', 'booking', 'exception_date')->where('id', $property_id);
         $property = $property->where('acception_status', 'accept');
-        $property = $property->where('property_status', 1);
+        $property = $property->where('property_status', true);
 
         $property = $property->first();
 
@@ -689,14 +701,14 @@ class PropertyController extends Controller
 
         $now = now()->toDateString();
         if ($request->status == "listed") {
-            $collection = $collection->where("property_status", 1);
+            $collection = $collection->where("property_status", true);
             $collection = $collection->where('acception_status', 'accept');
             $collection = $collection->whereDate('end_date', '>=', $now);
         }
 
         if ($request->status == "unlisted") {
             $collection = $collection->where(function ($query)  use ($now) {
-                $query->where('property_status', 0)->orWhere('end_date', '<', $now)->orWhere('acception_status', '!=', 'accept');
+                $query->where('property_status', false)->orWhere('end_date', '<', $now)->orWhere('acception_status', '!=', 'accept');
             });
         }
 

@@ -117,7 +117,9 @@ const formatDate = (dateObj) => {
   const month = dateObj.getMonth() + 1;
   const year = dateObj.getFullYear();
 
-  return `${year}-${month < 10 ? "0" + month : month}-${date < 10 ? "0" + date : date}`;
+  return `${year}-${month < 10 ? "0" + month : month}-${
+    date < 10 ? "0" + date : date
+  }`;
 };
 
 const listDate = (start, end) => {
@@ -158,7 +160,11 @@ const ViewProperty = () => {
     }
   }, [readAllStart.status]);
 
-  if (propertyQuery.isLoading || readAverageStart.isLoading || readAllStart.isLoading) {
+  if (
+    propertyQuery.isLoading ||
+    readAverageStart.isLoading ||
+    readAllStart.isLoading
+  ) {
     return <Loading />;
   }
 
@@ -173,7 +179,7 @@ const ViewProperty = () => {
       setShowSee(false);
     }
   };
-  console.log(readAllStart.data.total);
+
   const handleClickHide = () => {
     setPage(1);
     setShowSee(true);
@@ -181,8 +187,11 @@ const ViewProperty = () => {
 
   const bookedDate = [];
 
-  for (let i = 0; i < propertyQuery.data.booking.length; i++) {
-    if (propertyQuery.data.booking[i].booking_status === "success") {
+  for (let i = 0; i < propertyQuery.data?.booking?.length; i++) {
+    if (
+      propertyQuery.data.booking[i].booking_status === "success" ||
+      propertyQuery.data.booking[i].booking_status === "accepted"
+    ) {
       bookedDate.push({
         start: propertyQuery.data.booking[i].check_in_date,
         end: propertyQuery.data.booking[i].check_out_date,
@@ -190,7 +199,7 @@ const ViewProperty = () => {
     }
   }
 
-  for (let i = 0; i < propertyQuery.data.exception_date.length; i++) {
+  for (let i = 0; i < propertyQuery.data?.exception_date?.length; i++) {
     bookedDate.push({
       start: propertyQuery.data.exception_date[i].start_date,
       end: propertyQuery.data.exception_date[i].end_date,
@@ -199,7 +208,10 @@ const ViewProperty = () => {
 
   let arrBookedDate = [];
   for (let i = 0; i < bookedDate.length; i++) {
-    arrBookedDate = [...arrBookedDate, ...listDate(bookedDate[i].start, bookedDate[i].end)];
+    arrBookedDate = [
+      ...arrBookedDate,
+      ...listDate(bookedDate[i].start, bookedDate[i].end),
+    ];
   }
 
   const disabledBookDate = ({ activeStartDate, date, view }) => {
@@ -214,12 +226,30 @@ const ViewProperty = () => {
     let selectedArr = [];
 
     if (date[1] == null) {
-      selectedArr = [...listDate(formatDate(new Date(date[0])), formatDate(new Date(date[0])))];
+      selectedArr = [
+        ...listDate(
+          formatDate(new Date(date[0])),
+          formatDate(new Date(date[0]))
+        ),
+      ];
     } else {
-      selectedArr = [...listDate(formatDate(new Date(date[0])), formatDate(new Date(date[1])))];
+      selectedArr = [
+        ...listDate(
+          formatDate(new Date(date[0])),
+          formatDate(new Date(date[1]))
+        ),
+      ];
 
-      if (selectedArr.length < propertyQuery.data.minimum_stay || selectedArr.length > propertyQuery.data.maximum_stay) {
-        alert("Range booke date from " + propertyQuery.data.minimum_stay + " to " + propertyQuery.data.maximum_stay);
+      if (
+        selectedArr.length < propertyQuery.data.minimum_stay ||
+        selectedArr.length > propertyQuery.data.maximum_stay
+      ) {
+        alert(
+          "Range booke date from " +
+            propertyQuery.data.minimum_stay +
+            " to " +
+            propertyQuery.data.maximum_stay
+        );
         setValue([null, null]);
         return;
       }
@@ -266,7 +296,10 @@ const ViewProperty = () => {
           </StyledInformation>
           {readAverageStart.isSuccess && (
             <StyledContainerReview>
-              <StyledImage src="https://a0.muscache.com/pictures/ec500a26-609d-440f-b5d0-9e5f92afd478.jpg" alt="" />
+              <StyledImage
+                src="https://a0.muscache.com/pictures/ec500a26-609d-440f-b5d0-9e5f92afd478.jpg"
+                alt=""
+              />
               <StyledText>
                 <div>
                   <FontAwesomeIcon icon={faStar} style={{ color: "#ffcc00" }} />
@@ -275,7 +308,10 @@ const ViewProperty = () => {
                   <div> {readAverageStart.data.average}</div>
                 </div>
               </StyledText>
-              <StyledImage src="	https://a0.muscache.com/pictures/65bb2a6c-0bdf-42fc-8e1c-38cec04b2fa5.jpg" alt="" />
+              <StyledImage
+                src="	https://a0.muscache.com/pictures/65bb2a6c-0bdf-42fc-8e1c-38cec04b2fa5.jpg"
+                alt=""
+              />
             </StyledContainerReview>
           )}
           <StyledRating>
@@ -285,7 +321,13 @@ const ViewProperty = () => {
             {readAllStart.isSuccess &&
               readAllStart.data.ratings.data.map((item) => (
                 <div>
-                  <Avatar src={item.user.image} size="40px" textSizeRatio={2} round={true} name={item.user.first_name} />
+                  <Avatar
+                    src={item.user.image}
+                    size="40px"
+                    textSizeRatio={2}
+                    round={true}
+                    name={item.user.first_name}
+                  />
                   <StyledName>
                     {item.user.first_name} {item.user.last_name}
                   </StyledName>
@@ -310,9 +352,17 @@ const ViewProperty = () => {
           {readAverageStart.isSuccess && (
             <StyledSeeMore>
               {showSee ? (
-                <StyledButtonSeeMore onClick={handleClickSeeMore}>{">>"} See more</StyledButtonSeeMore>
+                <StyledButtonSeeMore onClick={handleClickSeeMore}>
+                  {">>"} See more
+                </StyledButtonSeeMore>
               ) : (
-                <div>{showSeeTotal ? <StyledButtonSeeMore onClick={handleClickHide}>{"<<"} Hide</StyledButtonSeeMore> : null}</div>
+                <div>
+                  {showSeeTotal ? (
+                    <StyledButtonSeeMore onClick={handleClickHide}>
+                      {"<<"} Hide
+                    </StyledButtonSeeMore>
+                  ) : null}
+                </div>
               )}
             </StyledSeeMore>
           )}

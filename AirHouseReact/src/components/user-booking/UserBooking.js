@@ -20,6 +20,12 @@ const Box = styled.div`
       font-weight: 600;
     }
   }
+
+  @media (max-width: 1150px) {
+    & .grid-container-user-booking {
+      grid-template-columns: 1fr;
+    }
+  }
 `;
 function UserBooking() {
   const [userTitle, setUserTitle] = useState("all");

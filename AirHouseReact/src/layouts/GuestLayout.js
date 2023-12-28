@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { UserQuery } from "api/userApi";
 import { Navigate } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import NavTopHome from "components/navbar/home/NavTopHome";
 import FooterIndex from "components/footer/host-creation/FooterIndex";
 import Loading from "components/Loading";
@@ -12,6 +12,7 @@ import { AmenitiesQuery } from "api/amenitiesApi";
 import { PropertyTypeQuery } from "api/property-typeApi";
 import { ProvinceQuery } from "api/locationApi";
 import { CategoryValueQuery } from "../api/blogCategoryApi";
+import { useLocation } from "react-router-dom";
 
 const StyledMenu = styled.div`
   display: flex;
@@ -19,21 +20,31 @@ const StyledMenu = styled.div`
   gap: 0.7rem;
   padding-left: 5%;
   flex-wrap: wrap;
+`;
 
-  & button {
-    background-color: inherit;
-    border: none;
-    padding: 10px 0;
-    color: white;
-    font-weight: 500;
-    font-size: 14px;
-    cursor: pointer;
-  }
+const StyledMenuButton = styled.button`
+  background-color: inherit;
+  border: none;
+  padding: 10px 1rem;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
 
-  & button:hover {
+
+  &:hover {
     background-color: white;
     color: red;
   }
+
+  ${(props) => {
+    if (props.$active) {
+      return css`
+        background-color: white;
+        color: red;
+      `;
+    }
+  }}
 `;
 
 const StyledContainer = styled.div`
@@ -49,6 +60,8 @@ export default function GuestLayout() {
   const propertyQuery = PropertyTypeQuery();
   const provinceQuery = ProvinceQuery();
   const categoryValueQuery = CategoryValueQuery();
+
+  const location = useLocation();
 
   if (
     userQuery.isLoading ||
@@ -66,16 +79,58 @@ export default function GuestLayout() {
     return <Navigate to="/" />;
   }
 
+  const compareString = (str1, str2) => {
+    let minLength = str1.length;
+    if (str2.length < minLength) {
+      minLength = str2.length;
+    }
+
+    return str1.substring(0, minLength) == str2.substring(0, minLength);
+  };
+
   return (
     <StyledContainer>
       <NavTopHome />
       <StyledMenu>
-        <button onClick={() => navigate("/user/your-dashboard")}>Dashboard</button>
-        <button onClick={() => navigate("/user/profile/detail")}>Profile</button>
-        <button onClick={() => navigate("/user/listing")}>My Listing</button>
-        <button onClick={() => navigate("/user/view-all-host-bookings")}>My Renting</button>
-        <button onClick={() => navigate("/user/booking-list")}>My Bookings</button>
-        <button onClick={() => navigate("/user/chat")}>Messages</button>
+        <StyledMenuButton
+          $active={compareString(location.pathname, "/user/your-dashboard")}
+          onClick={() => navigate("/user/your-dashboard")}
+        >
+          Dashboard
+        </StyledMenuButton>
+        <StyledMenuButton
+          $active={compareString(location.pathname, "/user/profile/")}
+          onClick={() => navigate("/user/profile/detail")}
+        >
+          Profile
+        </StyledMenuButton>
+        <StyledMenuButton
+          $active={compareString(location.pathname, "/user/listing")}
+          onClick={() => navigate("/user/listing")}
+        >
+          My Listing
+        </StyledMenuButton>
+        <StyledMenuButton
+          $active={compareString(
+            location.pathname,
+            "/user/view-all-host-bookings"
+          )}
+          onClick={() => navigate("/user/view-all-host-bookings")}
+        >
+          My Rentings
+        </StyledMenuButton>
+        <StyledMenuButton
+          $active={compareString(location.pathname, "/user/booking-list")}
+          onClick={() => navigate("/user/booking-list")}
+        >
+          My Bookings
+        </StyledMenuButton>
+        <StyledMenuButton
+          $active={compareString(location.pathname, "/user/chat")}
+          onClick={() => navigate("/user/chat")}
+        >
+          Messages
+        </StyledMenuButton>
       </StyledMenu>
       <Outlet />
       <FooterIndex />

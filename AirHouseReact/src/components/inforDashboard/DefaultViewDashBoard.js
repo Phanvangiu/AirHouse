@@ -9,6 +9,7 @@ import { useState } from "react";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
+import Loading from "components/Loading";
 
 const StyleCateBlock = styled.div`
   display: block;
@@ -144,7 +145,7 @@ const StyleCmt = styled.div`
 export default function DefaultViewDashboard() {
   const { id } = useParams();
 
-  const { data, isSuccess } = DefaultViewUserQuery(id);
+  const { data, isSuccess, isLoading } = DefaultViewUserQuery(id);
   if (isSuccess) {
     console.log(data.user.ratings);
   }
@@ -158,20 +159,39 @@ export default function DefaultViewDashboard() {
 
     return formattedDate;
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <>
       {isSuccess ? (
         <StyledLayout>
           <StyledLeft>
-            <Avatar src={data.user.image} size="12rem" textSizeRatio={2} round={true} name={data.user.first_name} />
+            <Avatar
+              src={data.user.image}
+              size="12rem"
+              textSizeRatio={2}
+              round={true}
+              name={data.user.first_name}
+            />
             <div>
               {data.user.email_verify_at === null ? (
                 <div>
-                  <FontAwesomeIcon icon={faTimes} style={{ color: "red", fontSize: "1.5rem" }} /> Identity Unverified
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    style={{ color: "red", fontSize: "1.5rem" }}
+                  />{" "}
+                  Identity Unverified
                 </div>
               ) : (
                 <div>
-                  <FontAwesomeIcon icon={faCheck} style={{ color: "green", fontSize: "1.5rem" }} /> Identity Verified
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    style={{ color: "green", fontSize: "1.5rem" }}
+                  />{" "}
+                  Identity Verified
                 </div>
               )}
             </div>
@@ -181,7 +201,9 @@ export default function DefaultViewDashboard() {
               <p style={{ fontSize: "1.7rem" }}>
                 Hi, I'm {data.user.first_name} {data.user.last_name}
               </p>
-              <p style={{ fontSize: "0.8rem", color: "gray" }}>Member since {formatCreatedAt(data.user.updated_at)} </p>
+              <p style={{ fontSize: "0.8rem", color: "gray" }}>
+                Member since {formatCreatedAt(data.user.updated_at)}{" "}
+              </p>
               <hr style={{ borderColor: "lightgrey", opacity: "0.3" }} />
             </div>
 
@@ -189,10 +211,20 @@ export default function DefaultViewDashboard() {
             <div>
               <StyleCateBlock>
                 <StyleTabTop>
-                  <StyleTabButton name="" value="1" onClick={() => setTab(1)} active={tab === 1}>
+                  <StyleTabButton
+                    name=""
+                    value="1"
+                    onClick={() => setTab(1)}
+                    active={tab === 1}
+                  >
                     Review From Guests
                   </StyleTabButton>
-                  <StyleTabButton name="" value="2" onClick={() => setTab(2)} active={tab === 2}>
+                  <StyleTabButton
+                    name=""
+                    value="2"
+                    onClick={() => setTab(2)}
+                    active={tab === 2}
+                  >
                     Review From Hosts
                   </StyleTabButton>
                 </StyleTabTop>
@@ -210,7 +242,10 @@ export default function DefaultViewDashboard() {
                                   key={index}
                                   icon={faStar}
                                   style={{
-                                    color: index < item.start ? "#ffcc00" : "#c0c0c0",
+                                    color:
+                                      index < item.start
+                                        ? "#ffcc00"
+                                        : "#c0c0c0",
                                   }}
                                 />
                               ))}
@@ -236,4 +271,3 @@ export default function DefaultViewDashboard() {
     </>
   );
 }
-

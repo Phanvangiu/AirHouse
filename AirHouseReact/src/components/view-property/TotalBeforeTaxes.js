@@ -7,7 +7,12 @@ import { useRef } from "react";
 import styled from "styled-components";
 import CalendarViewHost from "./CalendarViewHost";
 import Calendar from "react-calendar";
-import { faAngleUp, faChevronDown, faPlus, faSubtract } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleUp,
+  faChevronDown,
+  faPlus,
+  faSubtract,
+} from "@fortawesome/free-solid-svg-icons";
 import { CreateBookingMutation } from "api/userBookingApi";
 import { CreateTransactionMutation } from "api/transactionApi";
 import { useNavigate } from "react-router-dom";
@@ -188,7 +193,13 @@ const StyledTotal = styled.div`
   }
 `;
 
-const TotalBeforeTaxes = ({ data, value, setValue, onHandleChange, disabledBookDate }) => {
+const TotalBeforeTaxes = ({
+  data,
+  value,
+  setValue,
+  onHandleChange,
+  disabledBookDate,
+}) => {
   const navigate = useNavigate();
   const createBooking = CreateBookingMutation();
   const createTransaction = CreateTransactionMutation();
@@ -234,7 +245,7 @@ const TotalBeforeTaxes = ({ data, value, setValue, onHandleChange, disabledBookD
   const calBookedLength = (start, end) => {
     const oneDay = 24 * 60 * 60 * 1000;
 
-    return Math.floor((end - start) / oneDay);
+    return Math.floor((end - start) / oneDay) + 1;
   };
 
   const onSubmit = (ev) => {
@@ -250,15 +261,30 @@ const TotalBeforeTaxes = ({ data, value, setValue, onHandleChange, disabledBookD
     formData.append("check_in_date", formatDate(new Date(value[0])));
     formData.append("check_out_date", formatDate(new Date(value[1])));
     formData.append("base_price", data.base_price);
-    const bookedLength = calBookedLength(new Date(value[0]), new Date(value[1]));
+    const bookedLength = calBookedLength(
+      new Date(value[0]),
+      new Date(value[1])
+    );
     formData.append("total", data.base_price * bookedLength);
-    formData.append("site_fees", (data.base_price * bookedLength * 0.06).toFixed(2));
+    formData.append(
+      "site_fees",
+      (data.base_price * bookedLength * 0.06).toFixed(2)
+    );
     formData.append("booking_date", formatDate(new Date()));
     formData.append("total_person", guest);
     createBooking.mutate(formData, {
       onSuccess: (data) => {
+
         alert("success");
-        navigate("/user/payment?booking_id=" + data.id);
+
+        if(data.booking_status == "accepted"){
+          navigate("/user/payment?booking_id=" + data.id);
+        }
+
+        if(data.booking_status == "waiting"){
+          navigate("/user/booking-list")
+        }
+        
       },
       onError: (error) => {},
     });
@@ -268,7 +294,11 @@ const TotalBeforeTaxes = ({ data, value, setValue, onHandleChange, disabledBookD
     const button = document.querySelector(".click-box");
 
     function onMouseDown(ev) {
-      if (containerRef.current && !containerRef.current.contains(ev.target) && !button.contains(ev.target)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(ev.target) &&
+        !button.contains(ev.target)
+      ) {
         setShowText(false);
       }
     }
@@ -303,7 +333,11 @@ const TotalBeforeTaxes = ({ data, value, setValue, onHandleChange, disabledBookD
               selectRange={true}
               returnValue={"range"}
               view={"month"}
-              minDate={new Date(start_date) - new Date() > 0 ? new Date(start_date) : new Date()}
+              minDate={
+                new Date(start_date) > new Date()
+                  ? new Date(start_date)
+                  : new Date()
+              }
               maxDate={new Date(end_date)}
               maxDetail={"month"}
               value={value}
@@ -402,10 +436,15 @@ const TotalBeforeTaxes = ({ data, value, setValue, onHandleChange, disabledBookD
         </StyledCountGuest>
       </StyledBooking>
       {userQuery.isError && <p>Please login first</p>}
-      <StyledButton disabled={!value?.[1] || userQuery.isError} onClick={onSubmit}>
+      <StyledButton
+        disabled={!value?.[1] || userQuery.isError}
+        onClick={onSubmit}
+      >
         Continue
       </StyledButton>
-      <StyledDetailText>You'll be able to review before paying.</StyledDetailText>
+      <StyledDetailText>
+        You'll be able to review before paying.
+      </StyledDetailText>
       <StyledDetailContent>
         {value?.[0] && value?.[1] && (
           <div className="container">
@@ -413,7 +452,9 @@ const TotalBeforeTaxes = ({ data, value, setValue, onHandleChange, disabledBookD
               <span>
                 {formatDate(value[0])} to {formatDate(value[1])}
               </span>
-              <span>$ {data.base_price * calBookedLength(value[0], value[1])}</span>
+              <span>
+                $ {data.base_price * calBookedLength(value[0], value[1])}
+              </span>
             </div>
             <div className="content">
               <span>{calBookedLength(value[0], value[1]) + 1} night</span>
@@ -423,7 +464,14 @@ const TotalBeforeTaxes = ({ data, value, setValue, onHandleChange, disabledBookD
             </div>
             <div className="content">
               <span>Site fees</span>
-              <span>$ {(data.base_price * calBookedLength(value[0], value[1]) * 0.06).toFixed(2)} </span>
+              <span>
+                ${" "}
+                {(
+                  data.base_price *
+                  calBookedLength(value[0], value[1]) *
+                  0.06
+                ).toFixed(2)}{" "}
+              </span>
             </div>
           </div>
         )}
@@ -433,7 +481,8 @@ const TotalBeforeTaxes = ({ data, value, setValue, onHandleChange, disabledBookD
         <span>
           $
           {value?.[0] && value?.[1]
-            ? data.base_price * calBookedLength(value[0], value[1]) + data.base_price * calBookedLength(value[0], value[1]) * 0.06
+            ? data.base_price * calBookedLength(value[0], value[1]) +
+              data.base_price * calBookedLength(value[0], value[1]) * 0.06
             : 0}
         </span>
       </StyledTotal>

@@ -181,7 +181,13 @@ const formatDate = (dateObj) => {
 
   return `${month} , ${year}`;
 };
-const Information = ({ data, value, setValue, onHandleChange, disabledBookDate }) => {
+const Information = ({
+  data,
+  value,
+  setValue,
+  onHandleChange,
+  disabledBookDate,
+}) => {
   const navigate = useNavigate();
   const { pageWidth } = useStateContext();
   const [showSee, setShowSee] = useState(true);
@@ -218,7 +224,9 @@ const Information = ({ data, value, setValue, onHandleChange, disabledBookDate }
   }, []);
   //video them vao
   function extractVideoId(url) {
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+    const match = url.match(
+      /(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+    );
     return match && match[1];
   }
 
@@ -239,25 +247,35 @@ const Information = ({ data, value, setValue, onHandleChange, disabledBookDate }
             <span>{data.bedroom_count} bedrooms</span> <span> . </span>
           </StyledSpan>
           <StyledSpan>
-            <span>{data.bed_count} beds</span>
-            <span> . </span>
-          </StyledSpan>
-          <StyledSpan>
             <span>{data.bathroom_count} baths</span>
           </StyledSpan>
         </StyledDetailInfor>
       </StyledSection>
       <StyledSection>
-        <StyledHost onClick={() => window.open(`/profile/dashboard/${data.user.id}`, "_blank")}>
+        <StyledHost
+          onClick={() =>
+            window.open(`/profile/dashboard/${data.user.id}`, "_blank")
+          }
+        >
           <div>
-            <Avatar className="avatar" src={data.user.image} size="40px" textSizeRatio={2} round={true} name={data.user.first_name} />
+            <Avatar
+              className="avatar"
+              src={data.user.image}
+              size="40px"
+              textSizeRatio={2}
+              round={true}
+              name={data.user.first_name}
+            />
           </div>
           <div className="host-container">
             <p className="hosted">
               Hosted by {data.user.first_name} {data.user.last_name}
             </p>
             <p>
-              Since <StyledSince>{formatDate(new Date(data.user.created_at))}</StyledSince>
+              Since{" "}
+              <StyledSince>
+                {formatDate(new Date(data.user.created_at))}
+              </StyledSince>
             </p>
           </div>
         </StyledHost>
@@ -280,7 +298,9 @@ const Information = ({ data, value, setValue, onHandleChange, disabledBookDate }
         <StyledAboutText>{data.description}</StyledAboutText>
         <StyledSeeMore>
           {showSee ? (
-            <StyledButtonSeeMore onClick={handleClickSeeMore}>{">>"} See more</StyledButtonSeeMore>
+            <StyledButtonSeeMore onClick={handleClickSeeMore}>
+              {">>"} See more
+            </StyledButtonSeeMore>
           ) : (
             <div
               style={{
@@ -321,11 +341,17 @@ const Information = ({ data, value, setValue, onHandleChange, disabledBookDate }
             <iframe
               width="100%"
               height="400"
-              src={`https://www.youtube.com/embed/${extractVideoId(data.video)}`}
+              src={`https://www.youtube.com/embed/${extractVideoId(
+                data.video
+              )}`}
               allowFullScreen
               title={data.name}
             ></iframe>
-            <StyledA href={data.video} target="_blank" rel="noopener noreferrer">
+            <StyledA
+              href={data.video}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Welcome to the Extraordinary Moments at Our Property!
             </StyledA>
           </div>
@@ -343,12 +369,12 @@ const Information = ({ data, value, setValue, onHandleChange, disabledBookDate }
         <StyledTitle>House's rules</StyledTitle>
         <StyledSectionTow>
           <div>
-            <StyledP>Check-out after: 12PM </StyledP>
-            <StyledP>Check-out before: 14PM</StyledP>
+            <StyledP>Check-in after: {data.check_in_after} </StyledP>
+            <StyledP>Check-out before: {data.check_out_before}</StyledP>
           </div>
           <div>
-            <StyledP>Minimum stay: {data.minimum_stay}</StyledP>
-            <StyledP>Maximum stay: {data.maximum_stay}</StyledP>
+            <StyledP>Minimum stay: {data.minimum_stay} days</StyledP>
+            <StyledP>Maximum stay: {data.maximum_stay} days</StyledP>
           </div>
           <div>
             <StyledP>{data.accomodates_count} guests maximum</StyledP>

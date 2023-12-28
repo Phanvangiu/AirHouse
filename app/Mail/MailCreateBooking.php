@@ -15,10 +15,7 @@ class MailCreateBooking extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public $url;
+
     public $user;
     public $booking;
     public $property;
@@ -29,9 +26,7 @@ class MailCreateBooking extends Mailable
         $this->property = $property;
     }
 
-    /**
-     * Get the message envelope.
-     */
+
 
     public function build()
     {

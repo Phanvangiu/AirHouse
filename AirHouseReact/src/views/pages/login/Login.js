@@ -21,7 +21,7 @@ import { useRef } from "react";
 import { onLogin } from "api/userApi";
 import { useNavigate } from "react-router-dom";
 
-import { LoginAdminMutation } from "api/userApi";
+import { AdminLoginMutation } from "api/userApi";
 
 import "scss/style.scss";
 
@@ -30,25 +30,32 @@ const StyledError = styled.div`
 `;
 
 const Login = () => {
-  const loginMutation = LoginAdminMutation();
+  const loginMutation = AdminLoginMutation();
   const emailRef = useRef();
   const passwordRef = useRef();
   const navigate = useNavigate();
   const [accountError, setAccountError] = useState(false);
+  const [wrongType, setWrongType] = useState(false);
 
   function clickLogin() {
     setAccountError(false);
+    setWrongType(false);
 
     const payload = {
       email: emailRef.current.value,
       password: passwordRef.current.value,
     };
 
-    console.log(payload);
-
     loginMutation.mutate(payload, {
-      onError: () => {
-        setAccountError(true);
+      onError: (error) => {
+        const response = error.response;
+
+        if (response.status == 401) {
+          setAccountError(true);
+        }
+        if (response.status == 403) {
+          setWrongType(true);
+        }
       },
     });
   }
@@ -63,23 +70,45 @@ const Login = () => {
                 <CCardBody>
                   <CForm>
                     <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
+                    <p className="text-medium-emphasis">
+                      Sign In to your account
+                    </p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput ref={emailRef} placeholder="Email" autoComplete="username" />
+                      <CFormInput
+                        ref={emailRef}
+                        placeholder="Email"
+                        autoComplete="username"
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
-                      <CFormInput ref={passwordRef} type="password" placeholder="Password" autoComplete="current-password" />
+                      <CFormInput
+                        ref={passwordRef}
+                        type="password"
+                        placeholder="Password"
+                        autoComplete="current-password"
+                      />
                     </CInputGroup>
-                    {accountError && <StyledError>Wrong password or account</StyledError>}
+                    {accountError && (
+                      <StyledError>Wrong password or account</StyledError>
+                    )}
+                    {wrongType && (
+                      <StyledError>
+                        This account can't not access admin
+                      </StyledError>
+                    )}
                     <CRow>
                       <CCol xs={8}>
-                        <CButton onClick={clickLogin} color="primary" className="px-4">
+                        <CButton
+                          onClick={clickLogin}
+                          color="primary"
+                          className="px-4"
+                        >
                           Login
                         </CButton>
                       </CCol>

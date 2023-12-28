@@ -5,11 +5,13 @@ import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import PaymentForm from "./PaymentForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarXmark, faCreditCard } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendarXmark,
+  faCreditCard,
+} from "@fortawesome/free-solid-svg-icons";
 import BookingNotFound from "./BookingNotFound";
 import PaymentNotFound from "./PaymentNotFound";
 import Avatar from "react-avatar";
-
 const PaymentContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -21,8 +23,14 @@ const PaymentContainer = styled.div`
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   margin: 2rem auto;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
-const StyledContainer = styled.div``;
+const StyledContainer = styled.div`
+  max-width: 600px;
+  margin: 0 auto;
+`;
 const StyledNameProperty = styled.div`
   display: flex;
   justify-content: start;
@@ -85,16 +93,15 @@ const formatCreatedAt = (createdAt) => {
 
   return formattedDate;
 };
+const total = (a, b) => {
+  return parseFloat(a) + parseFloat(b);
+};
 const PaymentBooking = () => {
   const [searchParam, setSearchParam] = useSearchParams();
   const queryBooking = UserReadBooking(searchParam.get("booking_id"));
   if (queryBooking.isLoading) {
     return <Loading />;
   }
-  //đoạn này
-  //
-  //
-  //
   if (queryBooking.isError) {
     if (queryBooking.error.response.data.status === 403) {
       return <BookingNotFound />;
@@ -102,11 +109,6 @@ const PaymentBooking = () => {
       return <PaymentNotFound />;
     }
   }
-  // console.log("abc", queryBooking.error.response.data.status);
-  //đây
-  //
-  //
-  //
   const data = queryBooking.data;
   return (
     <div>
@@ -115,17 +117,29 @@ const PaymentBooking = () => {
           <PaymentContainer>
             <StyledContainer>
               <StyledNameProperty>
-                <Avatar src={data.hostName.image} size="40px" textSizeRatio={2} round={true} name={data.hostName.first_name} />
+                <Avatar
+                  src={data.hostName.image}
+                  size="40px"
+                  textSizeRatio={2}
+                  round={true}
+                  name={data.hostName.first_name}
+                />
                 <div>{data.booking.property.name}</div>
               </StyledNameProperty>
               <StyledCheckBlock>
                 <StyledCheck>
                   <div>Check in day: </div>
-                  <span>{formatCreatedAt(data.booking.check_in_date)}, after 02:00 PM</span>
+                  <span>
+                    {formatCreatedAt(data.booking.check_in_date)}, after:
+                    <span> {data.booking.property.check_in_after}</span>
+                  </span>
                 </StyledCheck>
                 <StyledCheck>
                   <div>Check out day:</div>
-                  <span>{formatCreatedAt(data.booking.check_out_date)}, before: 12:00 PM</span>
+                  <span>
+                    {formatCreatedAt(data.booking.check_out_date)}, before:
+                    <span> {data.booking.property.check_out_before}</span>
+                  </span>
                 </StyledCheck>
               </StyledCheckBlock>
               <StyledGuestBlock>
@@ -151,32 +165,35 @@ const PaymentBooking = () => {
                   <div>Total guest:</div>
                   <span>{data.booking.total_person}</span>
                 </StyledPropertyName>
+                <StyledPropertyName>
+                  <div>Amount:</div>
+                  <span>
+                    {total(data.booking.price_for_stay, data.booking.site_fees)} $
+                  </span>
+                </StyledPropertyName>
               </StyledGuestBlock>
               <StyledFixedBlock>
                 <StyledRefund>
                   <div>
                     <FontAwesomeIcon icon={faCalendarXmark} />
                   </div>
-                  <span>Không đổi lịch</span>
+                  <span>Unscheduled</span>
                 </StyledRefund>
                 <StyledRefund>
                   <div>
                     <FontAwesomeIcon icon={faCreditCard} />
                   </div>
-                  <span>Không hoàn tiền</span>
+                  <span>Unspeakable</span>
                 </StyledRefund>
               </StyledFixedBlock>
             </StyledContainer>
-            <div>
+            <StyledContainer>
               <PaymentForm data={data} />
-            </div>
+            </StyledContainer>
           </PaymentContainer>
         )}
       </div>
     </div>
   );
 };
-
-// Component mới để hiển thị form thanh toán
-
 export default PaymentBooking;
