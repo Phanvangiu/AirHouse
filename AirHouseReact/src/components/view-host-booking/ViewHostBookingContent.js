@@ -7,7 +7,9 @@ import { faAnglesLeft } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faAnglesRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ViewHostBookingItem, { BookingItemSkeleton } from "./ViewHostBookingItem";
+import ViewHostBookingItem, {
+  BookingItemSkeleton,
+} from "./ViewHostBookingItem";
 
 const StyledContainer = styled.div``;
 

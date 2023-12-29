@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { cilSettings } from "@coreui/icons";
 import { cilTrash } from "@coreui/icons";
@@ -149,7 +149,7 @@ export default function BlogList() {
 
   const totalItem = Number(currentPageQuery.data?.total || 0);
   const totalPage = Math.ceil(totalItem / 10);
-  console.log(currentPageQuery.data);
+
   const paginate = () => {
     const paginate = [];
 
@@ -178,18 +178,18 @@ export default function BlogList() {
     if (window.confirm("are you sure?")) {
       deleteMutation.mutate(id, {
         onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ["Blog", currentPage],
-          });
+          alert("Delete success");
+          queryClient.invalidateQueries([
+            { queryKey: ["ReadBlogPage", currentPage] },
+            { queryKey: ["blog"] },
+            { queryKey: ["BlogQueryId", id] },
+          ]);
         },
       });
     }
   };
 
-  // setChosenId(id);
-  // alert(chosenId);
   const onUpdateEvent = (id) => {
-    alert(id);
     setSearchParams({ id: id });
     navigate("/admin/blog/update-blog?id=" + Number(id));
   };
@@ -278,7 +278,7 @@ export default function BlogList() {
                     </td>
                     <td>
                       <CIcon
-                        onClick={() => onDeleteEvent(data.id)}
+                        onClick={() => onDeleteEvent(data.id, currentPage)}
                         icon={cilTrash}
                         customClassName="deleted-icon"
                       />

@@ -14,10 +14,6 @@ export const options = {
       display: true,
     },
   },
-  interaction: {
-    mode: 'index' ,
-    intersect: false,
-  },
   scales: {
     x: {
       stacked: true,

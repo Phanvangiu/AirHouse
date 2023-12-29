@@ -16,6 +16,7 @@ import { Rating } from "react-simple-star-rating";
 import { HostRatingMutation } from "api/startApi";
 import { HostReviewUserQuery } from "api/startApi";
 import { useQueryClient } from "@tanstack/react-query";
+import { UserQuery } from "api/userApi";
 
 const StyledContainer = styled.div`
   display: grid;
@@ -195,6 +196,15 @@ const StyledPopUp = styled(PopUpContainer)`
       outline: 1px solid red;
     }
   }
+
+  & button {
+    background-color: red;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: none;
+  }
 `;
 
 const StyledDisplayNone = styled.div`
@@ -202,15 +212,21 @@ const StyledDisplayNone = styled.div`
 `;
 
 export default function ViewHostBookingItem({ data }) {
+  const userQuery = UserQuery();
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  const rating = data.user.ratings?.find(
+    (item) => item.host_id == userQuery.data.user.id && item.property_id == null
+  );
+
   const [showMessage, setShowMessage] = useState(false);
   const [showRating, setShowRating] = useState(false);
-  const [ratingStar, setRatingStar] = useState();
-  const [ratingMessage, setRatingMessage] = useState("");
+  const [ratingStar, setRatingStar] = useState(rating?.start);
+  const [ratingMessage, setRatingMessage] = useState(rating?.message);
 
   const ratingMutation = HostRatingMutation();
-  const ratingQuery = HostReviewUserQuery(data.user.id);
 
   const onClickShowMessage = () => {
     setShowMessage(true);
@@ -238,18 +254,21 @@ export default function ViewHostBookingItem({ data }) {
   };
 
   const onRating = () => {
+    if (!ratingStar || !ratingMessage) {
+      alert("Please fill in information");
+    }
+
     const payload = {
       user_id: data.user.id,
       start: ratingStar,
       message: ratingMessage,
-      booking_id: data.id
+      booking_id: data.id,
     };
 
     ratingMutation.mutate(payload, {
       onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["host-review-user", data.user.id],
-        });
+        alert("success");
+        setShowRating(false);
       },
     });
   };
@@ -328,7 +347,7 @@ export default function ViewHostBookingItem({ data }) {
       {showRating ? (
         <StyledPopUp setShowPopUp={setShowRating}>
           <h3>Admin</h3>
-          <Rating  onClick={setRatingStar} initialValue={ratingStar}/>
+          <Rating onClick={setRatingStar} initialValue={ratingStar} />
           <textarea
             value={ratingMessage}
             onChange={(ev) => setRatingMessage(ev.target.value)}

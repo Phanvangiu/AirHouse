@@ -77,7 +77,7 @@ class RatingController extends Controller
         $listRating = Rating::where('property_id', $property_id)->get();
         $total = 0;
         $count = 0;
-        
+
         foreach ($listRating as $rating) {
             $total = $rating->start + $total;
             $count++;
@@ -97,23 +97,33 @@ class RatingController extends Controller
         $perpage = 4 * $page;
         $count = Rating::with('user')->where('property_id', $request->property_id)->count();
         $ratings = Rating::with('user')->where('property_id', $request->property_id)->orderBy("updated_at", "desc")->paginate($perpage);
-        
+
         if ($ratings) {
             return response()->json([
                 "ratings" => $ratings,
                 "total" => $count
             ]);
-        }else {
+        } else {
             return response("error", 404);
         }
     }
-    
+
     public function createHostReview(Request $request)
     {
 
         $host_id = auth()->user()->id;
         $booking =  Booking::where('id', $request->booking_id)->first();
         if ($booking) {
+            $review = Rating::where('host_id', $host_id)->where('renter_id', $booking->user_id)->first();
+
+            if ($review) {
+                $review->renter_id = $booking->user_id;
+                $review->start = $request->start;
+                $review->host_id = $host_id;
+                $review->message = $request->message;
+                $review->save();
+                return response($review, 200);
+            }
             $review = new Rating();
             $review->renter_id = $booking->user_id;
             $review->start = $request->start;
@@ -121,6 +131,7 @@ class RatingController extends Controller
             $review->message = $request->message;
             $review->save();
             return response($review, 200);
+            
         } else {
             return response("error", 404);
         }
@@ -136,7 +147,7 @@ class RatingController extends Controller
             return response("error", 404);
         }
     }
-    
+
     public function allHostReviewUser()
     {
         $user_id = auth()->user()->id;
@@ -149,5 +160,4 @@ class RatingController extends Controller
             return response("error", 404);
         }
     }
-    
 }

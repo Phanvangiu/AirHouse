@@ -22,8 +22,12 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import { useQueryClient } from "@tanstack/react-query";
 
-import { BlogCategoryQuery, DeleteBlogCategoryMutation } from "../../api/blogCategoryApi";
+import {
+  BlogCategoryQuery,
+  DeleteBlogCategoryMutation,
+} from "../../api/blogCategoryApi";
 import CreateCategoryPopUp from "./CreateCategoryPopUp";
+import UpdateCategoryPopUp from "./UpdateCategoryPopUp";
 
 const StyledAmenities = styled.div``;
 const StyledCreateButton = styled.button`
@@ -165,7 +169,9 @@ export default function BlogCategoryList() {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
+  const [currentPage, setCurrentPage] = useState(
+    Number(searchParams.get("page")) || 1
+  );
 
   const currentPageQuery = BlogCategoryQuery(currentPage);
   const queryClient = useQueryClient();
@@ -212,8 +218,6 @@ export default function BlogCategoryList() {
     }
   };
 
-  // setChosenId(id);
-  // alert(chosenId);
   const onUpdateEvent = (id) => {
     alert(id);
     setSearchParams({ id: id });
@@ -261,8 +265,20 @@ export default function BlogCategoryList() {
             <CIcon icon={cilPlus} customClassName="create-icon" />
             Create New Category
           </StyledCreateButton>
-          {showCreatePopUp && <CreateCategoryPopUp currentPage={currentPage} setShowPopUp={setShowCreatePopUp} />}
+          {showCreatePopUp && (
+            <CreateCategoryPopUp
+              currentPage={currentPage}
+              setShowPopUp={setShowCreatePopUp}
+            />
+          )}
           <br />
+          {showUpdatePopUp && (
+            <UpdateCategoryPopUp
+              currentPage={currentPage}
+              setShowPopUp={setshowUpdatePopUp}
+              chosenId={chosenId}
+            />
+          )}
         </StyledSearchContainer>
         <StyledTable className="table table-responsive table-hover">
           <thead>
@@ -289,10 +305,18 @@ export default function BlogCategoryList() {
                     <td>{data.name}</td>
 
                     <td>
-                      <CIcon onClick={() => onUpdateEvent(data.id)} icon={cilSettings} customClassName="update-icon" />
+                      <CIcon
+                        onClick={() => onUpdateEvent(data.id)}
+                        icon={cilSettings}
+                        customClassName="update-icon"
+                      />
                     </td>
                     <td>
-                      <CIcon onClick={() => onDeleteEvent(data.id)} icon={cilTrash} customClassName="deleted-icon" />
+                      <CIcon
+                        onClick={() => onDeleteEvent(data.id)}
+                        icon={cilTrash}
+                        customClassName="deleted-icon"
+                      />
                     </td>
                   </tr>
                 );
@@ -302,7 +326,10 @@ export default function BlogCategoryList() {
         <StyledPagination>
           <span>{totalItem} Total</span>
           <button onClick={onClickFirst} disabled={currentPage == 1}>
-            <CIcon icon={cilArrowThickFromRight} customClassName="arrow thick-arrow-left" />
+            <CIcon
+              icon={cilArrowThickFromRight}
+              customClassName="arrow thick-arrow-left"
+            />
           </button>
           <button onClick={onClickPrevious} disabled={currentPage == 1}>
             <CIcon icon={cilArrowLeft} customClassName="arrow arrow-left" />
@@ -326,7 +353,10 @@ export default function BlogCategoryList() {
             <CIcon icon={cilArrowRight} customClassName="arrow arrow-right" />
           </button>
           <button onClick={onClickLast} disabled={currentPage == totalPage}>
-            <CIcon icon={cilArrowThickFromLeft} customClassName="arrow thick-arrow-right" />
+            <CIcon
+              icon={cilArrowThickFromLeft}
+              customClassName="arrow thick-arrow-right"
+            />
           </button>
         </StyledPagination>
       </StyledContainer>

@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router";
 
 const StyledBlogEnd = styled.div`
   display: grid;
@@ -96,12 +97,17 @@ const StyleContent = styled.div`
 `;
 
 export default function BlogTop() {
+  const navigate = useNavigate();
+  const handleItemClick = () => {
+    navigate("/blog/160");
+  };
+
   return (
     <StyledBlogEnd>
       <StyleContent>
         <p className="p1">What makes Airhouse, Airhouse</p>
         <p className="p2">A letter from our founders</p>
-        <button>Read more</button>
+        <button onClick={handleItemClick}>Read more</button>
       </StyleContent>
       <StyleIMG>
         <img

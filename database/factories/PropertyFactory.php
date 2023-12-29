@@ -26,23 +26,27 @@ class PropertyFactory extends Factory
     public function definition(): array
     {
         $name = $this->faker->name();
-        $arrayDescription = [
-            'Floral Island Resort is nestled in the middle of Talacanen island and offers a secluded and exclusive atmosphere. With only 8 rooms, restaurant, chill-out place, bonfire- and grill on the beach and a lovely
-            overlooking massage hut, Floral Island Resort is perfect for small groups up to 24 guests.
-            We provide you with boat transfers, healthy and fresh meals from the region (breakfast, lunch and dinner), free use of kayaks, free wi-fi in the restaurant, 24hrs. solar power and comfortable accommodation with
-            private shower and electric fan. Drinks and other services like island hopping, fishing trips, etc. are not included. Scuba diving on request!
-            We are proud to be part of the coral triangle initiative, an international project planting artificial coral reefs. Visit our coral-domes and taklobo (giant clams) garden just in front of the Resort
-            Be a CORAL HERO and plant yourself some corals!',
-            'Our 8000m2 estate is located in the middle of lush and virgin jungle reaching until the sea with three small private beaches. Our property features a true jungle waterfall for you to shower and our newly opened very own "Jungle Spa" offering treatments for body and soul to our guests only. Adjacent to our private beaches you will have access to 6 other picturesque beaches located within maximum 10 minutes walking distance.
-            You will be able to enjoy breathtaking views with the sunset right behind the islands of the Angtong Marine National Park from our private bar and restaurant in a secluded beach atmosphere.  
-            The estate hosts, as of now, 2 free-standing guest villas. Each villa has its own entrance and closed garden with uninterrupted sea and garden views to assure a maximum of privacy and intimacy.',
-            'Aura House is perched on top of the Ayung river offering a beautiful view. It features 2 very romantic en-suite bedrooms, a large living room fully furnished, a small kitchen, and a private swimming pool with view.
-            It is the perfect gateway for adventurous couples and honeymoon.The whole house is private - it is just for you and your guests,
-            We are very proud to have in Aura House one of the famous egg shaped door built by the designer company Ibuku. It is the entrance of the second bedroom.
-            The atmosphere of Aura House is perfect for people looking to disconnect from their busy city life and/or nature enthusiasts. Be ready to be awaken by the sun peeking up into your room and the sounds of the river down below.',
-            'We welcome you to to one of our three villas a unique self-contained little paradise with private spa, restaurant and beach bar.
-            Your intimate luxury pool villa awaits you.The villa is made for 2 people only and guests over 16 years old.',
-            'Our charming home is semi wooden with 3 A/C bedrooms and 3 bathrooms. It is equipped with a kitchen, a bar, fiber optic wifi and a large open space upstairs. It is perfect for a family with children or a group of friends. We are 10 minutes walking distance from Chiangmai Gate and the Saturday walking street. We offer complimentary home cooked breakfast every morning and a complimentary pick up service from the airport.'
+        $arrayDescription =  [
+            "Embark on an adventure and explore the open waters in a sleek and modern boat.",
+            "Experience the thrill of sailing and harness the power of the wind on a sailboat.",
+            "Cruise along tranquil rivers and enjoy the serenity of nature on a riverboat.",
+            "Discover hidden coves and remote islands aboard a private yacht.",
+            "Feel the excitement as you ride the waves and engage in water sports on a speedboat.",
+            "Take a leisurely ride on a classic wooden boat and admire its timeless beauty.",
+            "Board a fishing boat and try your luck at catching a variety of fish.",
+            "Hop on a kayak or a canoe and navigate through scenic waterways at your own pace.",
+            "Enjoy a romantic sunset cruise and savor breathtaking views aboard a luxury catamaran.",
+            "Experience the charm of a traditional wooden sailboat and learn about its rich history.",
+            "Take a thrilling ride on a jet ski and feel the adrenaline rush on the water.",
+            "Embark on a scenic river cruise and witness stunning landscapes along the way.",
+            "Sail on a historic tall ship and immerse yourself in the nostalgia of a bygone era.",
+            "Join a wildlife tour on a boat and encounter fascinating marine creatures in their natural habitat.",
+            "Explore coastal caves and hidden beaches on a guided tour with a small boat.",
+            "Participate in a sailing regatta and compete with other boats in a thrilling race.",
+            "Experience luxury and comfort on a cruise ship and indulge in world-class amenities.",
+            "Navigate through narrow canals and bustling waterways on a charming canal boat.",
+            "Join a diving excursion on a dive boat and explore vibrant coral reefs and underwater ecosystems.",
+            "Embark on a river safari and spot exotic wildlife along the riverbanks."
         ];
         $description = $this->faker->randomElement($arrayDescription);
 
@@ -55,10 +59,11 @@ class PropertyFactory extends Factory
         $room_type = RoomType::pluck('id');
         $room_type_id = $this->faker->randomElement($room_type);
 
-        $category = Category::pluck('id');
-        $category_id = $this->faker->randomElement($category);
+        $categories = Category::pluck('id');
+        // $category_array = array_diff($categories, ['26', '27', '28', '32', '36']);
+        $category_id = $this->faker->randomElement($categories);
 
-        $provinces = Province::pluck('code');
+        $provinces =  Province::pluck('code');
         $provinces_id = $this->faker->randomElement($provinces);
 
 
@@ -73,13 +78,40 @@ class PropertyFactory extends Factory
         $end_date = Carbon::parse($start_date);
         $end_date->addDays($this->faker->numberBetween(60, 250));
         $base_price =  $this->faker->numberBetween(20, 200);
-        $minimum_stay = $this->faker->numberBetween(1, 2);
+        $minimum_stay = $this->faker->numberBetween(1, 3);
         $maximum_stay = $minimum_stay + $this->faker->numberBetween(1, 5);
+
         $place_greate_for = $this->faker->text();
         $guest_access = $this->faker->text();
         $interaction_guest = $this->faker->text();
         $thing_to_note = $this->faker->text();
-        $about_place = $this->faker->text();
+
+
+        $about_place_array = [
+            "Experience rural life and enjoy the open space on the farm.",
+            "Engage in agricultural activities and learn about farming practices.",
+            "Interact with farm animals and learn about their care and feeding.",
+            "Explore the fields and gardens filled with fresh produce and vibrant flowers.",
+            "Participate in farm-to-table experiences and savor the taste of freshly harvested ingredients.",
+            "Enjoy the tranquility and peacefulness of the countryside on the farm.",
+            "Learn about sustainable farming practices and the importance of organic agriculture.",
+            "Immerse yourself in nature and appreciate the beauty of the farm's landscapes.",
+            "Discover the joy of picking your own fruits and vegetables straight from the farm.",
+            "Take part in farm tours and educational workshops to deepen your understanding of agriculture.",
+            "Witness the cycle of life on the farm, from planting seeds to harvesting crops.",
+            "Indulge in farm-fresh meals and traditional dishes made with locally sourced ingredients.",
+            "Engage in farm activities such as milking cows, collecting eggs, or herding sheep.",
+            "Experience the sense of community and connection that comes with living and working on a farm.",
+            "Escape the hustle and bustle of the city and unwind in the peaceful atmosphere of the farm.",
+            "Learn about the importance of sustainable farming and its impact on the environment.",
+            "Engage in farm-based recreational activities such as horseback riding, fishing, or hiking.",
+            "Connect with nature and appreciate the symbiotic relationship between humans and the land.",
+            "Escape to the farm and enjoy a slower pace of life surrounded by nature.",
+            "Appreciate the hard work and dedication of farmers who provide us with fresh and nutritious food."
+        ];
+
+
+        $about_place = $this->faker->randomElement($about_place_array);
         $overview = $this->faker->text();
         $getting_around = $this->faker->text();
         $booking_type = 'instantly';
@@ -126,7 +158,7 @@ class PropertyFactory extends Factory
 
         $video = $this->faker->randomElement($videos);
         $property_status = 1;
-        $acception_status_array = ['accept', 'deny', 'waiting'];
+        $acception_status_array = ['deny', 'waiting'];
         $acception_status = $this->faker->randomElement($acception_status_array);
         $accomodates_count = $this->faker->numberBetween(1, 16);
 
@@ -164,4 +196,3 @@ class PropertyFactory extends Factory
         ];
     }
 }
-

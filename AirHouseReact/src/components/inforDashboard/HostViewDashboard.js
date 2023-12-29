@@ -297,31 +297,64 @@ export default function HostViewDashBoard() {
                   </StyleTabButton>
                 </StyleTabTop>
                 <StyleTabBody>
-                  {isSuccess && data ? (
+                {isSuccess && data ? (
                     <>
-                      {data?.user?.ratings?.slice(0, 4).map((item, index) => {
-                        return (
-                          <StyleCmt key={index}>
-                            <p>{item.property.name}</p>
-
-                            <div>
-                              {[...Array(5)].map((_, index) => (
-                                <FontAwesomeIcon
-                                  key={index}
-                                  icon={faStar}
-                                  style={{
-                                    color:
-                                      index < item.start
-                                        ? "#ffcc00"
-                                        : "#c0c0c0",
-                                  }}
-                                />
-                              ))}
-                            </div>
-                            <div>{item.message}</div>
-                          </StyleCmt>
-                        );
-                      })}
+                      {tab === 2 ? (
+                        <>
+                          {data.user.ratings
+                            .filter((item) => item.property_id == null)
+                            .slice(0, 4)
+                            .map((item, index) => {
+                              return (
+                                <StyleCmt key={index}>
+                                  <p>
+                                    {item.host.first_name} {item.host.last_name}
+                                  </p>
+                                  <div>
+                                    {[...Array(5)].map((_, index) => (
+                                      <FontAwesomeIcon
+                                        key={index}
+                                        icon={faStar}
+                                        style={{
+                                          color:
+                                            index < item.start
+                                              ? "#ffcc00"
+                                              : "#c0c0c0",
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
+                                  <div>{item.message}</div>
+                                </StyleCmt>
+                              );
+                            })}
+                        </>
+                      ) : (
+                        <>
+                          {data.user.ratings.filter(item => item.host_id == null).slice(0, 4).map((item, index) => {
+                            return (
+                              <StyleCmt key={index}>
+                                <p>{item.property.name}</p>
+                                <div>
+                                  {[...Array(5)].map((_, index) => (
+                                    <FontAwesomeIcon
+                                      key={index}
+                                      icon={faStar}
+                                      style={{
+                                        color:
+                                          index < item.start
+                                            ? "#ffcc00"
+                                            : "#c0c0c0",
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+                                <div>{item.message}</div>
+                              </StyleCmt>
+                            );
+                          })}
+                        </>
+                      )}
                     </>
                   ) : (
                     <Skeleton />

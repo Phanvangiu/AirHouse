@@ -8,83 +8,46 @@ import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import "./Hehe.scss";
 
-const StyleCateBlock = styled.div`
+const StyleTop = styled.div`
+  font-size: 1.5rem;
+  font-weight: 450;
+  margin: 3rem;
+  margin-left: 5rem;
+`;
+
+const StyleNotFound = styled.div`
+  position: absolute;
+  font-size: 2rem;
+  font-weight: 300;
+  color: lightgray;
+`;
+const StyleViewMore = styled.button`
   display: block;
-  max-width: 100rem;
-  margin: 0 auto;
-  margin-bottom: 5rem;
 
-  padding-top: 2rem;
-  & .title {
-    width: 60rem;
-    margin: 1rem;
-    font-size: 1.7rem;
-    font-weight: 600;
-    padding-left: 3rem;
-  }
-`;
+  margin: 3.5rem;
 
-const StyleTabButton = styled.button`
-  margin: 0.4rem;
-  max-width: max-content;
-  border: solid 1px lightgrey;
-  border-radius: 50px;
-  padding: 0.75rem 1.1rem;
-  font-weight: 500;
+  border: solid 0.8px black;
+  border-radius: 10px;
+  padding: 0.7rem 1.5rem;
+  font-weight: bolder;
   font-size: 0.8rem;
-  cursor: pointer;
   background-color: white;
-
-  /* CSS cho trạng thái active */
-  //sử dụng props của component (active) để kiểm tra xem nó có giá trị true hay k
-  ${({ active }) =>
-    active &&
-    css`
-      border: solid 2px black;
-      font-weight: 600;
-      pointer-events: none; /* Vô hiệu hóa sự kiện (hover)*/
-    `}
-
-  &:hover {
-    border: solid 1.2px black;
-  }
-
-  @media (max-width: 784px) {
-    padding: 0.5rem 0.8rem;
-    font-size: 0.7rem;
-  }
-`;
-
-const StyleTabBody = styled.div`
-  margin: 2rem 3.5rem;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  justify-items: center;
-
-  column-gap: 1.5rem;
-  row-gap: 13rem;
-
-  @media (max-width: 1023px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr 1fr;
-    margin: 1rem 1.5rem;
-  }
-
-  @media (max-width: 576px) {
-    grid-template-columns: 1fr;
-    margin: 1rem 1rem;
-  }
+  cursor: pointer;
 `;
 
 export default function BlogSearch() {
-  const [searchRs, setSearchRs] = useState("");
+  const navigate = useNavigate();
+  const [searchRs, setSearchRs] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const searchValue = searchParams.get("search");
+  const [notFound, setNotFound] = useState(false);
+  const [totalResults, setTotalResults] = useState(0); // Số lượng kết quả
 
-  const navigate = useNavigate();
+  const [viewMore, setViewMore] = useState(4);
+
+  function viewMoreHandle() {
+    setViewMore((prevViewMore) => prevViewMore + 4);
+  }
 
   const handleItemClick = (item) => {
     navigate(`/blog/${item.id}`);
@@ -94,6 +57,8 @@ export default function BlogSearch() {
     const SearchRequest = async () => {
       const response = await axiosClient.get(`search/${searchValue}`); //async await phải nằm trong thân function bên trong callback, hem được để ở phạm vi callback
       setSearchRs(response.data);
+      setTotalResults(response.data.length); // Lưu số lượng kết quả
+      setNotFound(response.data.length === 0);
     };
     SearchRequest();
   }, []);
@@ -106,29 +71,43 @@ export default function BlogSearch() {
     return formattedDate;
   };
   return (
-    <div className="blogs_search_conainer">
-      <div className="list_blogs">
-        {searchRs ? (
-          searchRs.map((item) => (
-            <div className="box_item">
-              <div
-                className="item"
-                key={item.id}
-                onClick={() => handleItemClick(item)}
-              >
-                <div className="box_image">
-                  <img src={item.image} />
+    <>
+      <StyleTop className="search-results-info">
+        <p>
+          Search Results for "{searchValue}" ({totalResults}
+          {totalResults < 2 ? " result" : " results"})
+          {/* Hiển thị thông tin kết quả */}
+        </p>
+      </StyleTop>
+      <div className="blogs_search_conainer">
+        <div className="list_blogs">
+          {notFound ? (
+            <StyleNotFound className="not-found-message">
+              <p>Sorry, no results were found.</p>
+            </StyleNotFound>
+          ) : searchRs ? (
+            searchRs.slice(0, viewMore).map((item) => (
+              <div className="box_item" key={item.id}>
+                <div className="item" onClick={() => handleItemClick(item)}>
+                  <div className="box_image">
+                    <img src={item.image} alt="Blog Image" />
+                  </div>
+                  <p>{item.title}</p>
+                  <p>{formatCreatedAt(item.created_at)}</p>
                 </div>
-
-                <p>{item.title}</p>
-                <p>{formatCreatedAt(item.created_at)}</p>
               </div>
-            </div>
-          ))
-        ) : (
-          <Skeleton />
-        )}
+            ))
+          ) : (
+            <Skeleton />
+          )}
+
+          {searchRs.length > viewMore ? (
+            <StyleViewMore onClick={viewMoreHandle}>View more</StyleViewMore>
+          ) : (
+            <></>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

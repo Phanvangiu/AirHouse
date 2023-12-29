@@ -23,6 +23,7 @@ class User extends Model
     {
         return $this->hasMany(Booking::class, 'user_id', 'id');
     }
+
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class, 'renter_id', 'id');

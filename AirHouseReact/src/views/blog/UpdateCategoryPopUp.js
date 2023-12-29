@@ -4,13 +4,17 @@ import { useState } from "react";
 import { cilCloudUpload } from "@coreui/icons";
 import CIcon from "@coreui/icons-react";
 import PopUpContainer from "ui/PopUpContainer";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import DefaultImg from "assets/default-img.webp";
 import { useQueryClient } from "@tanstack/react-query";
 
 //api import
-import { CreateAmenitiesMutation } from "api/amenitiesApi";
-import { CreateBlogCategoryMutation } from "../../api/blogCategoryApi";
+import { CreateAmenitiesMutation, AmenitiesQueryId } from "api/amenitiesApi";
+import {
+  CreateBlogCategoryMutation,
+  UpdateBlogCategoryMutation,
+  BlogCategoryQueryId,
+} from "../../api/blogCategoryApi";
 
 const StyledForm = styled.form`
   display: flex;
@@ -102,27 +106,39 @@ const StyledImgField = styled.div`
   }
 `;
 
-export default function CreateCategoryPopUp({ currentPage, setShowPopUp }) {
+export default function UpdateCategoryPopUp({
+  chosenId,
+  currentPage,
+  setShowPopUp,
+}) {
   const queryClient = useQueryClient();
-  const createMutation = CreateBlogCategoryMutation();
+  const BlogCategoryQuery = BlogCategoryQueryId(chosenId);
+  const updateMutation = UpdateBlogCategoryMutation();
 
   const [categoryName, setCategoryName] = useState("");
   const [error, setError] = useState(null);
 
-  const onAddNewCategory = (ev) => {
+  useEffect(() => {
+    if (BlogCategoryQuery.isSuccess) {
+      setCategoryName(BlogCategoryQuery.data.name);
+    }
+  }, [BlogCategoryQuery.status]);
+
+  const onUpdateEvent = (ev) => {
     ev.preventDefault();
 
     const formData = new FormData();
+    formData.append("id", chosenId);
     formData.append("name", categoryName);
 
-    createMutation.mutate(formData, {
+    updateMutation.mutate(formData, {
       onSuccess: () => {
-        alert("create success");
+        alert("Update success");
         setCategoryName("");
         setShowPopUp(false);
         setError(null);
         queryClient.invalidateQueries({
-          queryKey: ["CreateBlogCategory", "page", currentPage],
+          queryKey: ["BlogCategory"],
         });
       },
       onError: (err) => {
@@ -141,7 +157,7 @@ export default function CreateCategoryPopUp({ currentPage, setShowPopUp }) {
     <StyledPopUpContainer setShowPopUp={turnOffPopUp}>
       <StyledForm>
         <StyledInputField>
-          <label>Category Name to create</label>
+          <label>Category Name to update</label>
           <input
             onChange={(ev) => {
               setCategoryName(ev.target.value);
@@ -162,7 +178,7 @@ export default function CreateCategoryPopUp({ currentPage, setShowPopUp }) {
         <StyledButtonRow>
           <button
             disabled={categoryName == ""}
-            onClick={onAddNewCategory}
+            onClick={onUpdateEvent}
             className="submit-button"
           >
             Submit

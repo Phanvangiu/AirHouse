@@ -63,7 +63,7 @@ class UserController extends Controller
 
     public function readById($id)
     {
-        $user = User::with('ratings.property')->where('id',  $id)->first();
+        $user = User::with(['ratings.property','ratings.host'])->where('id',  $id)->first();
 
         if ($user) {
             if ($user->image) {
@@ -197,7 +197,7 @@ class UserController extends Controller
     {
         $userID = auth()->user()->id;
 
-        $user = User::with('bookings', 'ratings.property')->where('id', $userID)->first();
+        $user = User::with(['bookings', 'ratings.property', 'ratings.host'])->where('id', $userID)->first();
 
         // Lấy danh sách các Prop thuộc sở hữu của user đó
         $userOwnedProperties = Property::where('user_id', $userID)->pluck('id');
