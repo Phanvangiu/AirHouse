@@ -1626,7 +1626,7 @@ const StyledContent = styled.div`
 
   div {
     margin: 5rem auto;
-    padding: 0 10rem;
+    padding: 0 25rem;
     line-height: 1.5rem;
     text-align: justify;
 

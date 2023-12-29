@@ -73,7 +73,7 @@ class PropertyFactory extends Factory
         $end_date = Carbon::parse($start_date);
         $end_date->addDays($this->faker->numberBetween(60, 250));
         $base_price =  $this->faker->numberBetween(20, 200);
-        $minimum_stay = $this->faker->numberBetween(1, 10);
+        $minimum_stay = $this->faker->numberBetween(1, 2);
         $maximum_stay = $minimum_stay + $this->faker->numberBetween(1, 5);
         $place_greate_for = $this->faker->text();
         $guest_access = $this->faker->text();
@@ -164,3 +164,4 @@ class PropertyFactory extends Factory
         ];
     }
 }
+

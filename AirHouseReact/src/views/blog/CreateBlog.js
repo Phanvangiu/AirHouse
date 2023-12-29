@@ -46,6 +46,14 @@ const StyledImgField = styled.div`
   }
 `;
 
+const StyledError = styled.div`
+  color: red;
+  font-size: 14px;
+  height: 2.5rem;
+  padding: 5px 0;
+  text-align: justify;
+`;
+
 var Font = Quill.import("formats/font");
 
 Font.whitelist = ["arial", "roboto", "raleway", "montserrat", "lato", "rubik"];
@@ -170,6 +178,14 @@ export default function CreateBlog() {
   const createBlogMutation = CreateBlogMutation();
 
   const imgUploadRef = useRef();
+  const titleRef = useRef();
+
+  const REQUIRED_REGEX = /^.{1,}$/;
+  const [titleError, setTitleError] = useState(false);
+  const [qillError, setQillError] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const [cateError, setCateError] = useState(false);
+
   const [imgSrc, setImgSrc] = useState(DefaultImg);
 
   const { data: createdBlog } = createBlogMutation;
@@ -246,12 +262,52 @@ export default function CreateBlog() {
   };
 
   const handleSubmit = () => {
+    let isError = false;
     const file = imgUploadRef.current.files[0];
 
-    const formData = new FormData();
+    //check requied
+    if (!REQUIRED_REGEX.test(titleRef.current.value)) {
+      setTitleError(true);
+      isError = true;
+    } else {
+      setTitleError(false);
+    }
+
+    if (!REQUIRED_REGEX.test(qillRef.current.value)) {
+      setQillError(true);
+      isError = true;
+    } else {
+      setQillError(false);
+    }
+
+    if (imgSrc == DefaultImg) {
+      setImgError(true);
+      isError = true;
+    } else {
+      setImgError(false);
+    }
+
     const arrCate = Array.from(
       document.querySelectorAll('input[name="category"]:checked')
     ).map((checkbox) => checkbox.value);
+
+    if (arrCate.length == 0) {
+      setCateError(true);
+      isError = true;
+    } else {
+      setCateError(false);
+    }
+
+    if (isError === true) {
+      return;
+    } else {
+      setTitleError(false);
+      setQillError(false);
+      setImgError(false);
+    }
+
+    const formData = new FormData();
+
     formData.append("title", document.getElementById("title").value);
     arrCate.forEach((cate) => {
       formData.append("category[]", cate);
@@ -259,12 +315,6 @@ export default function CreateBlog() {
     formData.append("content", value);
     formData.append("image", file);
 
-    // console.log(
-    //   formData.get("title"),
-    //   formData.get("category"),
-    //   formData.get("content"),
-    //   formData.get("image")
-    // );
     createBlogMutation.mutate(formData, {
       onSuccess: () => {
         document.getElementById("title").value = "";
@@ -281,14 +331,20 @@ export default function CreateBlog() {
 
   return (
     <div className="text-editor">
+      <StyledError>
+        {titleError && <span>This field is required</span>}
+      </StyledError>
       <div className="title-block">
         <label htmlFor="">
           <b>Input Blog Title</b>
         </label>
-        <input type="text" name="title" id="title" />
+        <input type="text" name="title" id="title" ref={titleRef} />
       </div>
 
       <div className="blogCate-block">
+        <StyledError>
+          {cateError && <span>This field is required</span>}
+        </StyledError>
         <div className="title-block">
           <label
             htmlFor=""
@@ -314,6 +370,9 @@ export default function CreateBlog() {
           </ul>
         )}
       </div>
+      <StyledError>
+        {imgError && <span>This field is required</span>}
+      </StyledError>
       <StyledImgField>
         <label>
           <b>Blog Cover Image</b>
@@ -333,6 +392,9 @@ export default function CreateBlog() {
       </StyledImgField>
 
       <div className="title-block">
+        <StyledError>
+          {qillError && <span>This field is required</span>}
+        </StyledError>
         <label htmlFor="" className="content">
           <b>Input Blog Content</b>
         </label>

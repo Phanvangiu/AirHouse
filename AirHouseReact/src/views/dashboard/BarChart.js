@@ -14,13 +14,24 @@ export const options = {
       display: true,
     },
   },
+  interaction: {
+    mode: 'index' ,
+    intersect: false,
+  },
+  scales: {
+    x: {
+      stacked: true,
+    },
+    y: {
+      stacked: true,
+    },
+  },
   responsive: true,
 };
 
 export default function BarChart({ chartData }) {
   return (
     <StyledContainer>
-
       <Bar data={chartData} options={options} />
     </StyledContainer>
   );

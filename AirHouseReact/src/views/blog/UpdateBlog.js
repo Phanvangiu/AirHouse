@@ -3,10 +3,16 @@ import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./style.scss";
 import { useMemo, useEffect } from "react";
-import { UploadImageMutation, BlogQueryId, UpdateBlogMutation } from "api/blogApi";
+import {
+  UploadImageMutation,
+  BlogQueryId,
+  UpdateBlogMutation,
+} from "api/blogApi";
 
-
-import { BlogCategoryQuery, CategoryValueQuery } from "../../api/blogCategoryApi";
+import {
+  BlogCategoryQuery,
+  CategoryValueQuery,
+} from "../../api/blogCategoryApi";
 import { useSearchParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Skeleton from "react-loading-skeleton";
@@ -45,13 +51,34 @@ const StyledImgField = styled.div`
   }
 `;
 
+const StyledError = styled.div`
+  color: red;
+  font-size: 14px;
+  height: 2.5rem;
+  padding: 5px 0;
+  text-align: justify;
+`;
+
 var Font = Quill.import("formats/font");
 
 Font.whitelist = ["arial", "roboto", "raleway", "montserrat", "lato", "rubik"];
 Quill.register(Font, true);
 
 var Size = Quill.import("formats/size");
-Size.whitelist = ["9px", "10px", "11px", "12px", "14px", "16px", "18px", "20px", "22px", "24px", "26px", "28px"];
+Size.whitelist = [
+  "9px",
+  "10px",
+  "11px",
+  "12px",
+  "14px",
+  "16px",
+  "18px",
+  "20px",
+  "22px",
+  "24px",
+  "26px",
+  "28px",
+];
 Quill.register(Size, true);
 
 const Parchment = Quill.import("parchment");
@@ -74,7 +101,11 @@ const atValues = [
 
 const CustomToolbar = () => (
   <div id="toolbar">
-    <select className="ql-header" defaultValue={""} onChange={(e) => e.persist()}>
+    <select
+      className="ql-header"
+      defaultValue={""}
+      onChange={(e) => e.persist()}
+    >
       <option value="1" />
       <option value="2" />
       <option value="3" />
@@ -156,6 +187,14 @@ export default function UpdateBlog() {
   const [blogContent, setBlogContent] = useState("");
   const [error, setError] = useState(null);
 
+  const titleRef = useRef();
+
+  const REQUIRED_REGEX = /^.{1,}$/;
+  const [titleError, setTitleError] = useState(false);
+  const [qillError, setQillError] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const [cateError, setCateError] = useState(false);
+
   const imgUploadRef = useRef();
   const [imgSrc, setImgSrc] = useState(DefaultImg);
 
@@ -177,6 +216,20 @@ export default function UpdateBlog() {
     if (blogQuery.isSuccess) {
       setBlogTitle(blogQuery.data.title);
       setBlogContent(blogQuery.data.content);
+
+      setImgSrc(blogQuery.data.image);
+      let cateCheckedArr = [];
+      blogQuery.data.categories.forEach((item) => {
+        cateCheckedArr.push(item.id);
+      });
+      console.log(cateCheckedArr);
+
+      const category = document.getElementsByName("category");
+      for (let i = 0; i < category.length; i++) {
+        if (cateCheckedArr.includes(Number(category[i].value))) {
+          category[i].checked = true;
+        }
+      }
     }
   }, [blogQuery.status]);
 
@@ -232,11 +285,53 @@ export default function UpdateBlog() {
     setValue(content);
     setBlogContent(content);
   };
+
   const handleSubmit = () => {
+    let isError = false;
     const file = imgUploadRef.current.files[0];
 
+    //check requied
+    if (!REQUIRED_REGEX.test(titleRef.current.value)) {
+      setTitleError(true);
+      isError = true;
+    } else {
+      setTitleError(false);
+    }
+
+    if (!REQUIRED_REGEX.test(blogContent)) {
+      setQillError(true);
+      isError = true;
+    } else {
+      setQillError(false);
+    }
+
+    if (imgSrc == DefaultImg) {
+      setImgError(true);
+      isError = true;
+    } else {
+      setImgError(false);
+    }
+
+    const arrCate = Array.from(
+      document.querySelectorAll('input[name="category"]:checked')
+    ).map((checkbox) => checkbox.value);
+
+    if (arrCate.length == 0) {
+      setCateError(true);
+      isError = true;
+    } else {
+      setCateError(false);
+    }
+
+    if (isError === true) {
+      return;
+    } else {
+      setTitleError(false);
+      setQillError(false);
+      setImgError(false);
+    }
+
     const formData = new FormData();
-    const arrCate = Array.from(document.querySelectorAll('input[name="category"]:checked')).map((checkbox) => checkbox.value);
 
     formData.append("id", document.getElementById("id").value);
     formData.append("title", document.getElementById("title").value);
@@ -248,10 +343,15 @@ export default function UpdateBlog() {
 
     updateBlogMutation.mutate(formData, {
       onSuccess: () => {
-        document.getElementById("title").value = "";
-        document.querySelectorAll('input[name="category"]:checked').forEach((checkbox) => {
-          checkbox.checked = false;
+        queryClient.invalidateQueries({
+          queryKey: ["BlogQueryId", chosenId],
         });
+        document.getElementById("title").value = "";
+        document
+          .querySelectorAll('input[name="category"]:checked')
+          .forEach((checkbox) => {
+            checkbox.checked = false;
+          });
         setValue("");
       },
     });
@@ -259,7 +359,11 @@ export default function UpdateBlog() {
   return (
     <div className="text-editor">
       <div className="title-block">
+        <label htmlFor="">Blog ID</label>
         <input type="text" id="id" value={chosenId} readOnly />
+        <StyledError>
+          {titleError && <span>This field is required</span>}
+        </StyledError>
         <label htmlFor="">Input Blog Title</label>
         <input
           type="text"
@@ -268,13 +372,20 @@ export default function UpdateBlog() {
           onChange={(ev) => {
             setBlogTitle(ev.target.value);
           }}
+          ref={titleRef}
           value={blogTitle}
         />
       </div>
 
       <div className="blogCate-block">
+        <StyledError>
+          {cateError && <span>This field is required</span>}
+        </StyledError>
         <div className="title-block">
-          <label htmlFor="" style={{ marginTop: "0.5rem", marginBottom: "0.5rem" }}>
+          <label
+            htmlFor=""
+            style={{ marginTop: "0.5rem", marginBottom: "0.5rem" }}
+          >
             Check Blog Category
           </label>
         </div>
@@ -295,11 +406,20 @@ export default function UpdateBlog() {
           </ul>
         )}
       </div>
+      <StyledError>
+        {imgError && <span>This field is required</span>}
+      </StyledError>
       <StyledImgField>
         <label>
           <b>Blog Cover Image</b>
         </label>
-        <input ref={imgUploadRef} accept="image/*" onChange={checkChange} type="file" id="image" />
+        <input
+          ref={imgUploadRef}
+          accept="image/*"
+          onChange={checkChange}
+          type="file"
+          id="image"
+        />
         <img src={imgSrc} alt="img" />
         <button onClick={onUploadImg}>
           <CIcon icon={cilCloudUpload} customClassName="upload-icon" />
@@ -308,6 +428,9 @@ export default function UpdateBlog() {
       </StyledImgField>
 
       <div className="title-block">
+        <StyledError>
+          {qillError && <span>This field is required</span>}
+        </StyledError>
         <label htmlFor="" className="content">
           Input Blog Content
         </label>
@@ -324,7 +447,11 @@ export default function UpdateBlog() {
         style={{ height: "350px" }}
       />
       <br />
-      {createdBlog && <p style={{ color: "green" }}>Blog {createdBlog.title} updated successfully</p>}
+      {createdBlog && (
+        <p style={{ color: "green" }}>
+          Blog {createdBlog.title} updated successfully
+        </p>
+      )}
       <button onClick={handleSubmit}>Submit</button>
 
       <div dangerouslySetInnerHTML={{ __html: value }}></div>

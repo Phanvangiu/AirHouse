@@ -30,6 +30,12 @@ const _nav = [
     icon: <CIcon icon={cilMenu} customClassName="nav-icon" />,
   },
   {
+    component: CNavItem,
+    name: "Property Chart",
+    to: "/admin/property-chart",
+    icon: <CIcon icon={cilMenu} customClassName="nav-icon" />,
+  },
+  {
     component: CNavGroup,
     name: "Type",
     to: "admin/type",

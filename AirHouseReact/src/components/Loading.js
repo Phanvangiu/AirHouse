@@ -9,9 +9,9 @@ const StyledContainer = styled.div`
   align-items: center;
 `;
 
-export default function Loading() {
+export default function Loading({className}) {
   return (
-    <StyledContainer>
+    <StyledContainer className={className}>
       <ReactLoading type={"spin"} color={"rgb(255,0,0)"} height={"5%"} width={"5%"} />
     </StyledContainer>
   );

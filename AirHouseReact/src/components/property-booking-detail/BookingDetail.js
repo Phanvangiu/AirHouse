@@ -20,6 +20,7 @@ import { DenyBookingMutation } from "api/userBookingApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { AcceptBookingMutation } from "api/userBookingApi";
 import { useNavigate } from "react-router-dom";
+import LoadingButton from "components/LoadingButton";
 
 const StyledPopUp = styled(PopUpContainer)`
   width: 50rem;
@@ -506,16 +507,17 @@ export default function BookingDetail() {
 
                   <StyledButtonList>
                     <button
-                      disabled={active[0] != true}
+                      disabled={active[0] != true || denyMutation.isPending || acceptMutation.isPending}
                       onClick={(ev) => onAccept(ev, booking.id)}
                     >
-                      Accept
+                      {denyMutation.isPending || acceptMutation.isPending ? <span>Loading...</span> : <span>Accept</span>}
+                      
                     </button>
                     <button
                       disabled={active[0] != true}
                       onClick={(ev) => onDeny(ev, booking.id)}
                     >
-                      Deny
+                       {denyMutation.isPending || acceptMutation.isPending ? <span>Loading...</span> : <span>Deny</span>}
                     </button>
                     <button
                       disabled={active[2] != true}

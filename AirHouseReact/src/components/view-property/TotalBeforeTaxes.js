@@ -18,6 +18,8 @@ import { CreateTransactionMutation } from "api/transactionApi";
 import { useNavigate } from "react-router-dom";
 import { UserQuery } from "api/userApi";
 
+import LoadingButton from "components/LoadingButton";
+
 const StyledContainer = styled.div`
   position: relative;
   font-size: 15px;
@@ -435,10 +437,11 @@ const TotalBeforeTaxes = ({
       </StyledBooking>
       {userQuery.isError && <p>Please login first</p>}
       <StyledButton
-        disabled={!value?.[1] || userQuery.isError}
+        disabled={!value?.[1] || userQuery.isError || createBooking.isPending}
         onClick={onSubmit}
       >
-        Continue
+        {createBooking.isPending ? <LoadingButton /> : <span>Continue</span>}
+        {createBooking.is}
       </StyledButton>
       <StyledDetailText>
         You'll be able to review before paying.

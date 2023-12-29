@@ -64,3 +64,30 @@ export const ReadStartAll = (property_id, page) => {
   });
   return query;
 };
+
+const ratingFromHost = async (payload) => {
+  const response = await axiosClient.post("createHostReview", payload);
+  return response.data;
+};
+
+export const HostRatingMutation = () => {
+  const mutation = useMutation({
+    mutationFn: ratingFromHost,
+  });
+
+  return mutation;
+};
+
+const readHostReviewUser = async () => {
+  const response = await axiosClient.get("readHostReview");
+  return response.data;
+}
+
+export const HostReviewUserQuery = (id) => {
+  const query = useQuery({
+    queryKey: ["host-review-user", id],
+    queryFn: readHostReviewUser
+  })
+
+  return query
+}

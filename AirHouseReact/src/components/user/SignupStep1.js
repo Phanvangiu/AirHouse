@@ -134,7 +134,7 @@ const SignupStep1 = ({ state, dispatch }) => {
             {notUnique && <span>Someone is already using this email</span>}
           </StyledError>
         </StyledFormContainer>
-        <StyledButtonSubmit onClick={validateForm}>Continute</StyledButtonSubmit>\
+        <StyledButtonSubmit onClick={validateForm}>Continue</StyledButtonSubmit>\
       </StyledForm>
     </StyledContainer>
   );

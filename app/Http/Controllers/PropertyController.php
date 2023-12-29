@@ -783,4 +783,8 @@ class PropertyController extends Controller
             return response(['message' => 'not found'], 400);
         }
     }
+
+
+
+
 }

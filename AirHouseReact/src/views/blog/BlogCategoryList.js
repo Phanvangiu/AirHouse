@@ -263,8 +263,6 @@ export default function BlogCategoryList() {
           </StyledCreateButton>
           {showCreatePopUp && <CreateCategoryPopUp currentPage={currentPage} setShowPopUp={setShowCreatePopUp} />}
           <br />
-
-          <StyledSearchInput type="search" placeholder="Search" />
         </StyledSearchContainer>
         <StyledTable className="table table-responsive table-hover">
           <thead>

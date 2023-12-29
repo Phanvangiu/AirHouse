@@ -81,6 +81,7 @@ class BlogController extends Controller
         //     $Blog = Blog::where('id', $id_blog)->first();
         //     $imageName = $Blog->image;
         //     $Blog->image = asset('storage/images/blogs/' . $imageName);
+        //     return response($Blog);
         // }
         //để hiển thị bài viết dựa trên category
         $ListBlogThroughCateID =  [];
@@ -209,7 +210,9 @@ class BlogController extends Controller
         $blog = Blog::with('categories')->where('id',  $id)->first(); //categories: tên function tạo relationship bên file Model
 
         if ($blog) {
-            // $blog->icon_image = asset('storage/images/blogs/' . $blog->image);
+
+            $imageName = $blog->image;
+            $blog->image = asset('storage/images/blogs/' . $imageName);
             return response()->json($blog);
         } else {
             return response([

@@ -170,7 +170,7 @@ function BodyItem({ data, click }) {
         {data.images.map((img, index) => {
           return (
             <StyledImgContainer key={index} onClick={() => click(data.id)}>
-              <LazyLoadImage effect="blur" width={"100%"} height={"100%"} src={img.image} />
+              <img src={img.image} />
             </StyledImgContainer>
           );
         })}

@@ -168,7 +168,7 @@ const Login = ({ setShowLogin }) => {
           </StyledError>
         </StyledFormContainer>
         <StyledButtonSubmit type="submit" onClick={validateForm}>
-          Continute
+          Continue
         </StyledButtonSubmit>
         <StyledWith>Login with</StyledWith>
         <GoogleLogin

@@ -80,6 +80,8 @@ const ViewHostAllBooking = lazy(() => import("components/view-host-booking/ViewH
 const DefaultViewDashboard = lazy(() => import("components/inforDashboard/DefaultViewDashBoard"));
 const HostViewDashBoard = lazy(() => import("components/inforDashboard/HostViewDashboard"));
 
+const PropertyChart = lazy(() => import("views/property-chart/PropertyChart"))
+
 const router = createBrowserRouter([
   {
     path: "/user",
@@ -286,6 +288,12 @@ const router = createBrowserRouter([
         element: <BlogCategoryList />,
         exact: true,
       },
+      {
+        path: "/admin/property-chart",
+        name: "Property Chart",
+        element: <PropertyChart />,
+        exact: true,
+      }
     ],
   },
   {

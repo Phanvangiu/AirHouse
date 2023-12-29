@@ -156,7 +156,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::get('/get-transaction-count-report', [TransactionController::class, 'getTotalTransactionCount']);
   Route::get('/get-fee-transaction', [TransactionController::class, 'getTotalFeeTransaction']);
   Route::get('/get-to-day-transaction', [TransactionController::class, 'getTodayTransaction']);
+
+
+  Route::get('get-province-property', [ProvinceController::class, 'getCategoryBasedOnProvince']);
+  Route::get('get-category-province', [ProvinceController::class, 'getProvinceBasedOnCategory']);
+
+
+  Route::post('/createHostReview', [RatingController::class, 'createHostReview']);
+  Route::get('/readHostReview', [RatingController::class, 'readHostReview']);
+  Route::get('/allHostReviewUser', [RatingController::class, 'allHostReviewUser']);
+
 });
+
 
 Route::post('login-admin', [UserController::class, 'loginAdmin']);
 
@@ -200,3 +211,6 @@ Route::get('filter-preview', [PropertyController::class, 'showInIndexFilterPrevi
 Route::get('/readStart', [RatingController::class, 'readStart']);
 Route::get('/profile/dashboard/{id}', [UserController::class, 'readById']);
 //
+
+
+

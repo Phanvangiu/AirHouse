@@ -107,6 +107,47 @@ class RatingController extends Controller
             return response("error", 404);
         }
     }
-    // abc
-    // fhjrfghu
+    
+    public function createHostReview(Request $request)
+    {
+
+        $host_id = auth()->user()->id;
+        $booking =  Booking::where('id', $request->booking_id)->first();
+        if ($booking) {
+            $review = new Rating();
+            $review->renter_id = $booking->user_id;
+            $review->start = $request->start;
+            $review->host_id = $host_id;
+            $review->message = $request->message;
+            $review->save();
+            return response($review, 200);
+        } else {
+            return response("error", 404);
+        }
+    }
+
+    public function readHostReview(Request $request)
+    {
+        $host_id = auth()->user()->id;
+        $rating = Rating::where('renter_id', $request->renter_id)->where('host_id', $host_id)->first();
+        if ($rating) {
+            return response($rating, 200);
+        } else {
+            return response("error", 404);
+        }
+    }
+    
+    public function allHostReviewUser()
+    {
+        $user_id = auth()->user()->id;
+        $ratings = Rating::where('renter_id', $user_id)
+            ->where('host_id', '!=', null)
+            ->get();
+        if ($ratings) {
+            return response($ratings, 200);
+        } else {
+            return response("error", 404);
+        }
+    }
+    
 }

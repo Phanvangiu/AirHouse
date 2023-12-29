@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { CreateExceptionDateMutation } from "api/exceptionDateApi";
 import { useNavigate } from "react-router-dom";
+import LoadingButton from "components/LoadingButton";
 
 const StyledContainer = styled.div`
   display: grid;
@@ -100,6 +101,10 @@ const StyledLink = styled.button`
   transition: all 0.1s;
   &:hover {
     background-color: rgb(200, 0, 0);
+  }
+
+  &:disabled {
+    background-color: rgba(255, 0, 0, 0.5);
   }
 `;
 
@@ -572,7 +577,12 @@ const Calendar = () => {
             </StyledBox>
             <StyledGroupButon>
               <StyledLink onClick={onClickPrevious}>Back </StyledLink>
-              <StyledLink onClick={onClickFinish}>Finish </StyledLink>
+              <StyledLink
+                onClick={onClickFinish}
+                disabled={updateMutation.isPending}
+              >
+                {updateMutation.isPending || propertyMutation.isPending ? <p>Loading </p> : <p>Finish</p>}
+              </StyledLink>
             </StyledGroupButon>
           </StyledForm>
         )}
@@ -592,13 +602,9 @@ const Calendar = () => {
             />
             <StyledSubmitButton
               onClick={onAddExceptionDate}
-              disabled={
-                !exceptionValue?.[1] ||
-                propertyMutation.isIdle ||
-                updateMutation.isIdle
-              }
+              disabled={!exceptionValue?.[1]}
             >
-              Submit {propertyMutation}
+              Submit
             </StyledSubmitButton>
             <StyledExceptionContainer>
               {exceptionValueArray.map((exceptionObj, index) => {

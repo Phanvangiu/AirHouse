@@ -245,7 +245,6 @@ export default function BlogList() {
           </Link>
           <br />
           <br />
-          <StyledSearchInput type="search" placeholder="Search" />
         </StyledSearchContainer>
         <StyledTable className="table table-responsive table-hover">
           <thead>
