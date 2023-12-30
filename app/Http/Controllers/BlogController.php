@@ -187,12 +187,17 @@ class BlogController extends Controller
 
     public function readCurrentPage(Request $request)
     {
+        $search = $request->search;
         $currentPage = $request->page;    //api bên react đã gửi cái params có tên là page
-        $total = Blog::count();  //lấy tổng sp để chai trang
-        $collections = Blog::all()->reverse()->chunk(10);    //chuck(20) để chia ra những mảng con gồm 20sp trong mảng lớn, reverse: đảo lại để những cái mới tạo sẽ nằm đầu
-        $collection = $collections[$currentPage - 1];     // lấy 1 page cụ thể trong mảng các page
+
+        $collections = Blog::where('title', 'LIKE', '%' . $search . '%')->get();
+        $total = count($collections);
+        $collections = $collections->reverse()->chunk(10);
 
         $newCollection = [];
+        //chuck(20) để chia ra những mảng con gồm 20sp trong mảng lớn, reverse: đảo lại để những cái mới tạo sẽ nằm đầu
+        $collection = $collections[$currentPage - 1];     // lấy 1 page cụ thể trong mảng các page
+
         foreach ($collection as $key => $chunk) {
             array_push($newCollection,  $chunk);
         }

@@ -24,8 +24,9 @@ const createBlog = async (payload) => {
 
 const readBlog = async (query) => {
   const currentPage = query.queryKey[1];
+  const search = query.queryKey[2];
   const response = await axiosClient.get("readCurrentPage", {
-    params: { page: currentPage },
+    params: { page: currentPage, search: search },
   });
   return response.data;
 };
@@ -123,10 +124,11 @@ export const DeleteBlogMutation = () => {
   return categoryMutation;
 };
 
-export const ReadBlogPageQuery = (page) => {
+export const ReadBlogPageQuery = (page, search) => {
   const BlogQuery = useQuery({
-    queryKey: ["ReadBlogPage", page],
+    queryKey: ["ReadBlogPage", page, search],
     queryFn: readBlog,
+    retry: 0,
   });
 
   return BlogQuery;

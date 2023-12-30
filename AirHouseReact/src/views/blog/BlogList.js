@@ -36,8 +36,6 @@ const StyledContainer = styled.div`
   gap: 2rem;
 `;
 
-const StyledHeader = styled.div``;
-
 const StyledTable = styled.table`
   text-align: center;
   flex-grow: 1;
@@ -143,12 +141,19 @@ export default function BlogList() {
   const [currentPage, setCurrentPage] = useState(
     Number(searchParams.get("page")) || 1
   );
+  const [search, setSearch] = useState(searchParams.get("search") || "");
 
-  const currentPageQuery = ReadBlogPageQuery(currentPage);
+  const currentPageQuery = ReadBlogPageQuery(currentPage, search);
   const queryClient = useQueryClient();
 
   const totalItem = Number(currentPageQuery.data?.total || 0);
   const totalPage = Math.ceil(totalItem / 10);
+
+  if (currentPageQuery.isError) {
+    if (currentPage != 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  }
 
   const paginate = () => {
     const paginate = [];
@@ -245,6 +250,13 @@ export default function BlogList() {
           </Link>
           <br />
           <br />
+          <StyledSearchInput
+            id="search"
+            type="search"
+            placeholder="Search..."
+            value={search}
+            onChange={(ev) => setSearch(ev.target.value)}
+          ></StyledSearchInput>
         </StyledSearchContainer>
         <StyledTable className="table table-responsive table-hover">
           <thead>
