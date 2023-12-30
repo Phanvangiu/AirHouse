@@ -417,9 +417,6 @@ export default function CreateBlog() {
         </p>
       )}
       <button onClick={handleSubmit}>Submit</button>
-
-      <div dangerouslySetInnerHTML={{ __html: value }}></div>
-      {value}
     </div>
   );
 }

@@ -14,8 +14,8 @@ const StyledBody = styled.div``;
 const StyledContainer = styled(StyledHomePageContainer)`
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  column-gap: 1rem;
-  row-gap: 1rem;
+  column-gap: 1.3rem;
+  row-gap: 3.5rem;
   font-family: "Poppins", sans-serif;
 
   @media (max-width: 1879px) {
@@ -40,7 +40,8 @@ const StyledContainer = styled(StyledHomePageContainer)`
 `;
 
 function HomeBody() {
-  const { chosenProperty, state, clickFilter, setClickFilter } = useStateContext();
+  const { chosenProperty, state, clickFilter, setClickFilter } =
+    useStateContext();
   const filterObj = {
     province: state.province,
     checkIn: state.checkIn,
@@ -56,7 +57,11 @@ function HomeBody() {
     amenities: state.amenities,
   };
 
-  const propertyQuery = PropertyIndexQuery(chosenProperty, filterObj, secondObj);
+  const propertyQuery = PropertyIndexQuery(
+    chosenProperty,
+    filterObj,
+    secondObj
+  );
   const navigate = useNavigate();
 
   const onClickProperty = (id) => {
@@ -92,7 +97,14 @@ function HomeBody() {
       {clickFilter && <FilterBody setShowPopUp={setClickFilter} />}
       <StyledContainer>
         {propertyQuery.isSuccess &&
-          propertyQuery.data.map((item, index) => <BodyItem key={index} click={onClickProperty} data={item} className="item" />)}
+          propertyQuery.data.map((item, index) => (
+            <BodyItem
+              key={index}
+              click={onClickProperty}
+              data={item}
+              className="item"
+            />
+          ))}
       </StyledContainer>
     </StyledBody>
   );

@@ -48,18 +48,18 @@ class DatabaseSeeder extends Seeder
         //     }            
         // }
 
-        // $properties = Property::pluck('id');
+        $properties = Property::pluck('id');
 
-        // foreach ($properties as $property) {
-        //     $property_images = PropertyImage::where('property_id', $property)->first();
-        //     if (!$property_images) {
-        //         for ($i = 0; $i < 10; $i++) {
-        //             PropertyImage::factory()->state([
-        //                 'property_id' => $property
-        //             ])->create();
-        //         }
-        //     }
-        // }
+        foreach ($properties as $property) {
+            $property_images = PropertyImage::where('property_id', $property)->first();
+            if (!$property_images) {
+                for ($i = 0; $i < 8; $i++) {
+                    PropertyImage::factory()->state([
+                        'property_id' => $property
+                    ])->create();
+                }
+            }
+        }
 
         // $properties = Property::pluck('id');
         // foreach ($properties as $property) {
@@ -73,21 +73,21 @@ class DatabaseSeeder extends Seeder
         //     }
         // }
 
-        $amenites = Amenity::pluck('id');
-        $properties = Property::pluck('id');
-        foreach ($properties as $property) {
-            $amenites_array = [];
-            foreach ($amenites as $amenity) {
-                $amenites_array[] = $amenity;
-            }
-            $randomAmenites = array_unique(Arr::random($amenites_array, fake()->numberBetween(10, 20)));
-            foreach ($randomAmenites as $item) {
-                DB::table('property_amenities')->insert([
-                    'property_id' => $property,
-                    'amenity_id' => $item
-                ]);
-            }
-        }
+        // $amenites = Amenity::pluck('id');
+        // $properties = Property::pluck('id');
+        // foreach ($properties as $property) {
+        //     $amenites_array = [];
+        //     foreach ($amenites as $amenity) {
+        //         $amenites_array[] = $amenity;
+        //     }
+        //     $randomAmenites = array_unique(Arr::random($amenites_array, fake()->numberBetween(10, 20)));
+        //     foreach ($randomAmenites as $item) {
+        //         DB::table('property_amenities')->insert([
+        //             'property_id' => $property,
+        //             'amenity_id' => $item
+        //         ]);
+        //     }
+        // }
 
 
         // ///////////////////////////////////////////////////////////////////////////
