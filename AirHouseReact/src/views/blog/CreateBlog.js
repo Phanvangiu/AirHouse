@@ -229,10 +229,25 @@ export default function CreateBlog() {
     input.setAttribute("accept", "image/*");
     input.click();
 
+    const allowedFileTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+    ];
+
     input.onchange = () => {
       if (input !== null && input.files !== null) {
         const file = input.files[0];
-        console.log(file);
+
+        if (file) {
+          const isValidFileType = allowedFileTypes.includes(file.type);
+          if (!isValidFileType) {
+            alert("Invalid file type! Please select a valid image file.");
+            return;
+          }
+        }
+
         const formData = new FormData();
         formData.append("image", file);
 

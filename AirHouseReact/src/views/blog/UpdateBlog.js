@@ -210,8 +210,8 @@ export default function UpdateBlog() {
     ];
 
     if (imgUploadRef.current.files.length != 0) {
-      const isValidFileType = Array.from(imgUploadRef.current.files).every((file) =>
-        allowedFileTypes.includes(file.type)
+      const isValidFileType = Array.from(imgUploadRef.current.files).every(
+        (file) => allowedFileTypes.includes(file.type)
       );
 
       if (!isValidFileType) {
@@ -261,6 +261,13 @@ export default function UpdateBlog() {
   const [value, setValue] = useState("");
 
   const imageHandler = useCallback(async () => {
+    const allowedFileTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+    ];
+
     const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
@@ -269,6 +276,14 @@ export default function UpdateBlog() {
     input.onchange = () => {
       if (input !== null && input.files !== null) {
         const file = input.files[0];
+
+        if (file) {
+          const isValidFileType = allowedFileTypes.includes(file.type);
+          if (!isValidFileType) {
+            alert("Invalid file type! Please select a valid image file.");
+            return;
+          }
+        }
 
         const formData = new FormData();
         formData.append("image", file);
