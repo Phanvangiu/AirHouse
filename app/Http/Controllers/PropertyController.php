@@ -519,12 +519,11 @@ class PropertyController extends Controller
                 ->groupBy('property_id');
         }]);
 
-        // $property = $property->leftJoin('rating', 'properties.id', '=', 'rating.property_id')
-        //     ->selectRaw('properties.id, AVG(rating.start) as average_rating')
-        //     ->groupBy('properties.id');
+  
+
+        // $property = $property->orderByDesc('booking_count');
 
 
-        $property = $property->orderByDesc('booking_count');
 
 
         $property = $property->paginate(20);

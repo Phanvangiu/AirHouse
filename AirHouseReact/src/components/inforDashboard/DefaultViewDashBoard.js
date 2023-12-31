@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { DefaultViewUserQuery } from "../../api/userApi";
 import Skeleton from "react-loading-skeleton";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Avatar from "react-avatar";
 import { css } from "styled-components";
 import { useState } from "react";
@@ -143,6 +143,7 @@ const StyleCmt = styled.div`
 `;
 
 export default function DefaultViewDashboard() {
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const { data, isSuccess, isLoading } = DefaultViewUserQuery(id);
@@ -263,28 +264,40 @@ export default function DefaultViewDashboard() {
                         </>
                       ) : (
                         <>
-                          {data.user.ratings.filter(item => item.host_id == null).slice(0, 4).map((item, index) => {
-                            return (
-                              <StyleCmt key={index}>
-                                <p>{item.property.name}</p>
-                                <div>
-                                  {[...Array(5)].map((_, index) => (
-                                    <FontAwesomeIcon
-                                      key={index}
-                                      icon={faStar}
-                                      style={{
-                                        color:
-                                          index < item.start
-                                            ? "#ffcc00"
-                                            : "#c0c0c0",
-                                      }}
-                                    />
-                                  ))}
-                                </div>
-                                <div>{item.message}</div>
-                              </StyleCmt>
-                            );
-                          })}
+                          {data.user.ratings
+                            .filter((item) => item.host_id == null)
+                            .slice(0, 4)
+                            .map((item, index) => {
+                              return (
+                                <StyleCmt key={index}>
+                                  <p
+                                    onClick={() =>
+                                      navigate(
+                                        `/property?id=${item.property.id}`
+                                      )
+                                    }
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    {item.property.name}
+                                  </p>
+                                  <div>
+                                    {[...Array(5)].map((_, index) => (
+                                      <FontAwesomeIcon
+                                        key={index}
+                                        icon={faStar}
+                                        style={{
+                                          color:
+                                            index < item.start
+                                              ? "#ffcc00"
+                                              : "#c0c0c0",
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
+                                  <div>{item.message}</div>
+                                </StyleCmt>
+                              );
+                            })}
                         </>
                       )}
                     </>

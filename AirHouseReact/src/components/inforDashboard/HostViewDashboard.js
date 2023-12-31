@@ -14,7 +14,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css } from "styled-components";
 import { useState } from "react";
 import Loading from "components/Loading";
-import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 const StyleCateBlock = styled.div`
@@ -169,10 +168,6 @@ const StyleCmt = styled.div`
   width: 100%;
   margin-top: 0.8rem;
 
-  & p:nth-of-type(1){
-    cursor: pointer;
-  }
-
   & p {
     font-weight: 500;
     font-size: 1.2rem;
@@ -194,8 +189,8 @@ const StyledIdentity = styled.div`
 export default function HostViewDashBoard() {
   const navigate = useNavigate();
   const { data, isSuccess, isLoading } = GuestViewUserQuery();
-  const bookingsCount = data?.bookFromOthers;
-  const tripsCount = data?.user?.bookings?.length || 0;
+  const rentingCount = data?.bookFromOthers;
+  const bookingCount = data?.user?.bookings?.length || 0;
   console.log(data);
   const [tab, setTab] = useState(1);
 
@@ -251,7 +246,7 @@ export default function HostViewDashBoard() {
                   style={{ color: "violet", fontSize: "2.5rem" }}
                 />
                 <p>
-                  <span>My Bookings</span> <span>{bookingsCount}</span>
+                  <span>My Bookings</span> <span>{bookingCount}</span>
                 </p>
               </div>
               <div>
@@ -260,7 +255,7 @@ export default function HostViewDashBoard() {
                   style={{ color: "lightgreen", fontSize: "2.9rem" }}
                 />
                 <p>
-                  <span>My Rentings</span> <span>{tripsCount}</span>
+                  <span>My Rentings</span> <span>{rentingCount}</span>
                 </p>
               </div>
             </StyledTopCard>
@@ -304,7 +299,7 @@ export default function HostViewDashBoard() {
                   </StyleTabButton>
                 </StyleTabTop>
                 <StyleTabBody>
-                {isSuccess && data ? (
+                  {isSuccess && data ? (
                     <>
                       {tab === 2 ? (
                         <>
@@ -338,28 +333,40 @@ export default function HostViewDashBoard() {
                         </>
                       ) : (
                         <>
-                          {data.user.ratings.filter(item => item.host_id == null).slice(0, 4).map((item, index) => {
-                            return (
-                              <StyleCmt key={index}>
-                                <p onClick={() => navigate(`/property?id=${item.property.id}`)}>{item.property.name}</p>
-                                <div>
-                                  {[...Array(5)].map((_, index) => (
-                                    <FontAwesomeIcon
-                                      key={index}
-                                      icon={faStar}
-                                      style={{
-                                        color:
-                                          index < item.start
-                                            ? "#ffcc00"
-                                            : "#c0c0c0",
-                                      }}
-                                    />
-                                  ))}
-                                </div>
-                                <div>{item.message}</div>
-                              </StyleCmt>
-                            );
-                          })}
+                          {data.user.ratings
+                            .filter((item) => item.host_id == null)
+                            .slice(0, 4)
+                            .map((item, index) => {
+                              return (
+                                <StyleCmt key={index}>
+                                  <p
+                                    onClick={() =>
+                                      navigate(
+                                        `/property?id=${item.property.id}`
+                                      )
+                                    }
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    {item.property.name}
+                                  </p>
+                                  <div>
+                                    {[...Array(5)].map((_, index) => (
+                                      <FontAwesomeIcon
+                                        key={index}
+                                        icon={faStar}
+                                        style={{
+                                          color:
+                                            index < item.start
+                                              ? "#ffcc00"
+                                              : "#c0c0c0",
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
+                                  <div>{item.message}</div>
+                                </StyleCmt>
+                              );
+                            })}
                         </>
                       )}
                     </>
