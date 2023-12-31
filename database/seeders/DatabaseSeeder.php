@@ -13,6 +13,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Arr;
 use App\Models\PropertyImage;
 use App\Models\PropertyAmenity;
+use Database\Factories\BookingFactory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -48,18 +49,31 @@ class DatabaseSeeder extends Seeder
         //     }            
         // }
 
-        $properties = Property::pluck('id');
+        // $properties = Property::pluck('id');
 
-        foreach ($properties as $property) {
-            $property_images = PropertyImage::where('property_id', $property)->first();
-            if (!$property_images) {
-                for ($i = 0; $i < 8; $i++) {
-                    PropertyImage::factory()->state([
-                        'property_id' => $property
-                    ])->create();
-                }
-            }
+        // foreach ($properties as $property) {
+        //     $property_images = PropertyImage::where('property_id', $property)->first();
+        //     if (!$property_images) {
+        //         for ($i = 0; $i < 8; $i++) {
+        //             PropertyImage::factory()->state([
+        //                 'property_id' => $property
+        //             ])->create();
+        //         }
+        //     }
+        // }
+
+        Booking::factory()->state(['user_id'=> 43])->count(1)->create();
+
+        $users = User::pluck('id');
+
+
+        foreach($users as $user){
+            Booking::factory()->state(['user_id'=> $user])->count(fake()->numberBetween(5, 10))->create();
         }
+
+
+
+
 
         // $properties = Property::pluck('id');
         // foreach ($properties as $property) {

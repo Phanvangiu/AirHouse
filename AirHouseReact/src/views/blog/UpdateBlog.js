@@ -202,7 +202,25 @@ export default function UpdateBlog() {
   const blogQuery = BlogQueryId(chosenId);
 
   const checkChange = () => {
+    const allowedFileTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+    ];
+
     if (imgUploadRef.current.files.length != 0) {
+      const isValidFileType = Array.from(imgUploadRef.current.files).every((file) =>
+        allowedFileTypes.includes(file.type)
+      );
+
+      if (!isValidFileType) {
+        alert("Invalid file type! Please select a valid image file.");
+        imgUploadRef.current.files = null;
+        setImgSrc(DefaultImg);
+        return;
+      }
+
       setImgSrc(URL.createObjectURL(imgUploadRef.current.files[0]));
       console.log(imgSrc);
     }

@@ -8,6 +8,8 @@ import { BodyItemSkeleton } from "./BodyItem";
 import { useNavigate } from "react-router-dom";
 import FilterBody from "./FilterBody";
 import PropertyNotFound from "components/PropertyNotFound";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 const StyledBody = styled.div``;
 
@@ -37,6 +39,23 @@ const StyledContainer = styled(StyledHomePageContainer)`
   @media (max-width: 550px) {
     grid-template-columns: repeat(1, 1fr);
   }
+`;
+
+const StyledObserve = styled.div`
+  height: 1rem;
+  background-color: blue;
+  margin: 2rem 0;
+`;
+
+const StyledEnd = styled.div`
+  text-align: center;
+  margin: 2rem 0;
+  color: red;
+  font-weight: 700;
+  font-size: 18px;
+  
+
+
 `;
 
 function HomeBody() {
@@ -69,9 +88,28 @@ function HomeBody() {
     newTab.location.href = `property?id=${id}`;
   };
 
+  const { ref, inView, entry } = useInView({
+    threshold: 0,
+  });
+
+  // Load more items when the sentinel comes into view
+  useEffect(() => {
+    if (inView) {
+      // Replace this with your function to load more items
+      if (propertyQuery.hasNextPage) {
+        propertyQuery.fetchNextPage();
+      }
+    }
+  }, [entry]);
+
   if (propertyQuery.isLoading) {
     return (
       <StyledContainer>
+        <BodyItemSkeleton />
+        <BodyItemSkeleton />
+        <BodyItemSkeleton />
+        <BodyItemSkeleton />
+        <BodyItemSkeleton />
         <BodyItemSkeleton />
         <BodyItemSkeleton />
         <BodyItemSkeleton />
@@ -93,19 +131,49 @@ function HomeBody() {
 
   return (
     <StyledBody>
-      {/* {propertyQuery.isSuccess && propertyQuery.data.length == 0 && <PropertyNotFound />} */}
       {clickFilter && <FilterBody setShowPopUp={setClickFilter} />}
       <StyledContainer>
         {propertyQuery.isSuccess &&
-          propertyQuery.data.map((item, index) => (
-            <BodyItem
-              key={index}
-              click={onClickProperty}
-              data={item}
-              className="item"
-            />
-          ))}
+          propertyQuery.data.pages.map((page, index) => {
+            return page.data.map((item, index) => {
+              return (
+                <BodyItem
+                  key={index}
+                  click={onClickProperty}
+                  data={item}
+                  className="item"
+                />
+              );
+            });
+          })}
+        {propertyQuery.isFetchingNextPage && (
+          <>
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+            <BodyItemSkeleton />
+          </>
+        )}
+
+        <div ref={ref}></div>
       </StyledContainer>
+      {!propertyQuery.hasNextPage && <StyledEnd>Nothing more to show</StyledEnd>}
     </StyledBody>
   );
 }

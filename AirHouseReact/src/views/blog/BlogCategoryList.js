@@ -219,7 +219,6 @@ export default function BlogCategoryList() {
   };
 
   const onUpdateEvent = (id) => {
-    alert(id);
     setSearchParams({ id: id });
     setshowUpdatePopUp(true);
     setChosenId(id);

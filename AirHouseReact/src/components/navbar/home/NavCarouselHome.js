@@ -159,6 +159,7 @@ function SliderItem({ img, name, click, index, activeArr, id }) {
       onClick={() => {
         click();
         setChosenProperty(id);
+        window.scrollTo(0, 0);
       }}
       $border={activeArr[index]}
     >

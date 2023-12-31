@@ -64,11 +64,11 @@ function FilterButton({ setClickFilter }) {
     count++;
   }
 
-  if (state.bathRoom != "any") {
+  if (state.bathRoom != "Any") {
     count++;
   }
 
-  if (state.bedRoom != "any") {
+  if (state.bedRoom != "Any") {
     count++;
   }
 

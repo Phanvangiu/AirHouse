@@ -23,25 +23,26 @@ class BookingFactory extends Factory
     {
         $users = User::pluck('id');
         $user_id = fake()->randomElement($users);
-        // $user_id = 147;
+        
 
         $properties = Property::where('user_id', '!=', $user_id)->pluck('id');
         $property_id = fake()->randomElement($properties);
 
-        $total_day_booking = fake()->numberBetween(1, 30);
-        $check_in_date = Carbon::parse(fake()->dateTimeBetween('2023-11-01', '2023-12-31'));
+        $total_day_booking = fake()->numberBetween(1, 5) ;
+        $check_in_date = Carbon::parse(fake()->dateTimeBetween('2023-12-01', '2024-03-01'));
         $check_out_date = Carbon::parse($check_in_date);
         $check_out_date->addDays($total_day_booking);
 
         $price_per_day = fake()->numberBetween(1, 50);
-        $price_for_stay = $total_day_booking * $price_per_day;
-        $site_fees = 0;
+        $price_for_stay = ($total_day_booking + 1 ) * $price_per_day;
+        $site_fees = $price_for_stay*0.06;
 
 
-        $booking_date = fake()->dateTimeBetween('2023-05-01', $check_in_date);
-        $total_person = 5;
+        // $booking_date = fake()->dateTimeBetween('2023-11-01', $check_in_date);
+        $booking_date = $check_in_date;
+        $total_person = fake()->numberBetween(1,5);
 
-        $booking_array = ['success', 'accepted', 'denied', 'waiting'];
+        $booking_array = ['success', 'expired', 'denied'];
         $booking_status = fake()->randomElement($booking_array);
         return [
             'property_id' =>  $property_id,

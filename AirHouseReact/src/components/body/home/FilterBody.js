@@ -33,12 +33,7 @@ const StyledPopUpContainer = styled(PopUpContainer)`
   @media only screen and (max-width: 530px) {
     width: 25rem;
   }
-
-
-
-
 `;
-
 
 const StyledAmenities = styled.div`
   display: grid;
@@ -228,7 +223,13 @@ export default function FilterBody({ setShowPopUp }) {
   const amenitiesQuery = AmenitiesQuery();
   const arrRoomAndBeds = ["Any", 1, 2, 3, 4, 5, 6, 7, "8+"];
 
-  const [activeRoomType, setActiveRoomType] = useState([true, false, false, false, false]);
+  const [activeRoomType, setActiveRoomType] = useState([
+    true,
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   const onSetActiveRoomType = (index) => {
     const newArr = [false, false, false, false, false];
@@ -236,24 +237,60 @@ export default function FilterBody({ setShowPopUp }) {
     setActiveRoomType(newArr);
   };
 
-  const initialActiveRoomAndBed = [true, false, false, false, false, false, false, false, false];
+  const initialActiveRoomAndBed = [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ];
 
   const [activeBed, setActiveBed] = useState(initialActiveRoomAndBed);
   const [activeBath, setActiveBath] = useState(initialActiveRoomAndBed);
 
   const onSetActiveBath = (index) => {
-    const newArr = [false, false, false, false, false, false, false, false, false];
+    const newArr = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ];
     newArr[index] = true;
     setActiveBath(newArr);
   };
 
   const onSetActiveBed = (index) => {
-    const newArr = [false, false, false, false, false, false, false, false, false];
+    const newArr = [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ];
     newArr[index] = true;
     setActiveBed(newArr);
   };
 
-  const [activePropertyType, setActivePropertyType] = useState([true, false, false, false, false]);
+  const [activePropertyType, setActivePropertyType] = useState([
+    true,
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   const onSetActivePropertyType = (index) => {
     const newArr = [false, false, false, false, false];
@@ -276,7 +313,11 @@ export default function FilterBody({ setShowPopUp }) {
     amenities: amenities,
   };
 
-  const filterPreviewQuery = FilterPreviewQuery(chosenProperty, filterObj, secondObjPreview);
+  const filterPreviewQuery = FilterPreviewQuery(
+    chosenProperty,
+    filterObj,
+    secondObjPreview
+  );
 
   const onClickFilter = () => {
     dispatch({ type: ACTIONS.CHANGE_ROOM_TYPE, next: roomType });
@@ -284,17 +325,24 @@ export default function FilterBody({ setShowPopUp }) {
     dispatch({ type: ACTIONS.CHANGE_BATH_ROOM, next: bath });
     dispatch({ type: ACTIONS.CHANGE_PROPERTY_TYPE, next: propertyType });
     dispatch({ type: ACTIONS.CHANGE_AMENTITIES, next: amenities });
+
+    setShowPopUp(false);
   };
 
   const onClearFilter = () => {
     dispatch({ type: ACTIONS.CHANGE_ROOM_TYPE, next: "any" });
-    dispatch({ type: ACTIONS.CHANGE_BED_ROOM, next: "any" });
-    dispatch({ type: ACTIONS.CHANGE_BATH_ROOM, next: "any" });
+    dispatch({ type: ACTIONS.CHANGE_BED_ROOM, next: "Any" });
+    dispatch({ type: ACTIONS.CHANGE_BATH_ROOM, next: "Any" });
     dispatch({ type: ACTIONS.CHANGE_PROPERTY_TYPE, next: "any" });
     dispatch({ type: ACTIONS.CHANGE_AMENTITIES, next: [] });
+    setPropertyType("any");
+    onSetActivePropertyType(0);
     setRoomType("any");
-    setBed("any");
-    setBath("any");
+    onSetActiveRoomType(0);
+    setBed("Any");
+    onSetActiveBed(0);
+    onSetActiveBath(0);
+    setBath("Any");
     setAmenities([]);
   };
 
@@ -449,7 +497,9 @@ export default function FilterBody({ setShowPopUp }) {
                           setAmenities(newAmenities);
                           return;
                         }
-                        const newAmenities = amenities.filter((item) => item != amenity.id);
+                        const newAmenities = amenities.filter(
+                          (item) => item != amenity.id
+                        );
                         setAmenities(newAmenities);
                       }}
                       readOnly
@@ -479,7 +529,9 @@ export default function FilterBody({ setShowPopUp }) {
                           setAmenities(newAmenities);
                           return;
                         }
-                        const newAmenities = amenities.filter((item) => item != amenity.id);
+                        const newAmenities = amenities.filter(
+                          (item) => item != amenity.id
+                        );
                         setAmenities(newAmenities);
                       }}
                       name="amenities"
@@ -509,7 +561,9 @@ export default function FilterBody({ setShowPopUp }) {
                             setAmenities(newAmenities);
                             return;
                           }
-                          const newAmenities = amenities.filter((item) => item != amenity.id);
+                          const newAmenities = amenities.filter(
+                            (item) => item != amenity.id
+                          );
                           setAmenities(newAmenities);
                         }}
                         readOnly
@@ -527,7 +581,9 @@ export default function FilterBody({ setShowPopUp }) {
 
       <StyledEnd>
         <StyledClearButtton onClick={onClearFilter}>Clear</StyledClearButtton>
-        <StyledFilterButton onClick={onClickFilter}>Show {filterPreviewQuery.data?.total} places</StyledFilterButton>
+        <StyledFilterButton onClick={onClickFilter}>
+          Show {filterPreviewQuery.data?.total} places
+        </StyledFilterButton>
       </StyledEnd>
     </StyledPopUpContainer>
   );

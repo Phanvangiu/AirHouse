@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Carbon\Carbon;
 use App\Models\User;
 use Ramsey\Uuid\Uuid;
@@ -13,6 +14,7 @@ use App\Mail\MailDenyProperty;
 use App\Models\PropertyAmenity;
 use App\Mail\MailAcceptProperty;
 use App\Mail\MailCreateProperty;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Models\PropertyExceptionDate;
 use Illuminate\Support\Facades\Storage;
@@ -250,8 +252,8 @@ class PropertyController extends Controller
         $property->acception_status = 'accept';
         $property->admin_message = $request->message;
         $property->save();
-        $user  = User::where('id',$property->user_id)->first();
-        Mail::to($user->email)->send(new MailAcceptProperty($user,  $property));    
+        $user  = User::where('id', $property->user_id)->first();
+        Mail::to($user->email)->send(new MailAcceptProperty($user,  $property));
 
         return response([
             'message' => 'accept property'
@@ -271,7 +273,7 @@ class PropertyController extends Controller
         $property->admin_message = $request->message;
         $property->save();
 
-        $user  = User::where('id',$property->user_id)->first();
+        $user  = User::where('id', $property->user_id)->first();
         Mail::to($user->email)->send(new MailDenyProperty($user,  $property));
 
         return response([
@@ -374,20 +376,19 @@ class PropertyController extends Controller
             $property = $property->where('room_type_id', $request->roomType);
         }
 
-        if ($request->bedRoom != 'any') {
-
+        if ($request->bedRoom != 'Any') {
             if ($request->bedRoom == '8+') {
                 $property = $property->where('bedroom_count', '>=', 8);
             } else {
-                $property = $property->where('bedroom_count', '>=', $request->bedRoom);
+                $property = $property->where('bedroom_count', $request->bedRoom);
             }
         }
 
-        if ($request->bathRoom != 'any') {
+        if ($request->bathRoom != 'Any') {
             if ($request->bathRoom == '8+') {
                 $property = $property->where('bathroom_count', '>=', 8);
             } else {
-                $property = $property->where('bathroom_count', '>=', $request->bathRoom);
+                $property = $property->where('bathroom_count', $request->bathRoom);
             }
         }
 
@@ -431,7 +432,7 @@ class PropertyController extends Controller
     public function showInIndex(Request $request)
     {
         $category = $request->category;
-        $property = Property::with('user', 'category', 'property_type', 'room_type', 'district', 'province', 'amenities', 'images', 'rating', 'exception_date')->where('category_id', $category);
+        $property = Property::with('user', 'category', 'property_type', 'room_type', 'district', 'province', 'amenities', 'images', 'exception_date')->where('category_id', $category);
         $property = $property->where('acception_status', 'accept');
         $property = $property->where('property_status', true);
 
@@ -483,20 +484,19 @@ class PropertyController extends Controller
             $property = $property->where('room_type_id', $request->roomType);
         }
 
-        if ($request->bedRoom != 'any') {
-
+        if ($request->bedRoom != 'Any') {
             if ($request->bedRoom == '8+') {
                 $property = $property->where('bedroom_count', '>=', 8);
             } else {
-                $property = $property->where('bedroom_count', '>=', $request->bedRoom);
+                $property = $property->where('bedroom_count', $request->bedRoom);
             }
         }
 
-        if ($request->bathRoom != 'any') {
+        if ($request->bathRoom != 'Any') {
             if ($request->bathRoom == '8+') {
                 $property = $property->where('bathroom_count', '>=', 8);
             } else {
-                $property = $property->where('bathroom_count', '>=', $request->bathRoom);
+                $property = $property->where('bathroom_count', $request->bathRoom);
             }
         }
 
@@ -512,8 +512,22 @@ class PropertyController extends Controller
             });
         }
 
+        $property = $property->withCount('booking');
 
-        $property = $property->get();
+        $property = $property->with(['rating' => function ($query) {
+            $query->selectRaw('property_id, AVG(start) as average_rating')
+                ->groupBy('property_id');
+        }]);
+
+        // $property = $property->leftJoin('rating', 'properties.id', '=', 'rating.property_id')
+        //     ->selectRaw('properties.id, AVG(rating.start) as average_rating')
+        //     ->groupBy('properties.id');
+
+
+        $property = $property->orderByDesc('booking_count');
+
+
+        $property = $property->paginate(20);
 
         foreach ($property as $key => $value) {
             foreach ($property[$key]->images as $imgkey => $imgvalue) {
@@ -783,8 +797,4 @@ class PropertyController extends Controller
             return response(['message' => 'not found'], 400);
         }
     }
-
-
-
-
 }

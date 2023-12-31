@@ -76,8 +76,8 @@ export const ContextProvider = ({ children }) => {
     checkOut: null,
     accommodate: null,
     roomType: "any",
-    bedRoom: "any",
-    bathRoom: "any",
+    bedRoom: "Any",
+    bathRoom: "Any",
     propertyType: "any",
     amenities: [],
   });

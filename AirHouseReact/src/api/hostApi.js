@@ -1,5 +1,5 @@
 import axiosClient from "./axiosClient";
-import { useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -51,7 +51,21 @@ export const PropertiesCurrentPageQuery = (
   property_status
 ) => {
   const propertiesQuery = useQuery({
-    queryKey: ["properties", status, page, [search, category, roomtype, propertytype, accomodates, bedroom, bookingType, property_status]],
+    queryKey: [
+      "properties",
+      status,
+      page,
+      [
+        search,
+        category,
+        roomtype,
+        propertytype,
+        accomodates,
+        bedroom,
+        bookingType,
+        property_status,
+      ],
+    ],
     queryFn: readCurrentPage,
     keepPreviousData: true,
     retry: 0,
@@ -102,47 +116,48 @@ export const DenyPropertyMutation = () => {
   return propertyMutation;
 };
 
-const readPropertyIndex = async (query) => {
-  const category = query.queryKey[1];
+// const readPropertyIndex = async (query) => {
+//   const category = query.queryKey[1];
+//   const page = query.get
 
-  const filterObj = query.queryKey[2];
-  const province = filterObj.province;
-  const checkIn = filterObj.checkIn;
-  const checkOut = filterObj.checkOut;
-  const accommodate = filterObj.guest_count;
+//   const filterObj = query.queryKey[2];
+//   const province = filterObj.province;
+//   const checkIn = filterObj.checkIn;
+//   const checkOut = filterObj.checkOut;
+//   const accommodate = filterObj.guest_count;
 
-  const secondFilterObj = query.queryKey[3];
-  const roomType = secondFilterObj.roomType;
-  const bed = secondFilterObj.bed;
-  const bath = secondFilterObj.bath;
-  const propertyType = secondFilterObj.propertyType;
-  const amenities = secondFilterObj.amenities;
+//   const secondFilterObj = query.queryKey[3];
+//   const roomType = secondFilterObj.roomType;
+//   const bed = secondFilterObj.bed;
+//   const bath = secondFilterObj.bath;
+//   const propertyType = secondFilterObj.propertyType;
+//   const amenities = secondFilterObj.amenities;
 
-  const response = await axiosClient.get("show-property-index", {
-    params: {
-      category: category,
-      province: province,
-      checkInFilter: checkIn,
-      checkOutFilter: checkOut,
-      guest_count: accommodate,
-      roomType: roomType,
-      bedRoom: bed,
-      bathRoom: bath,
-      propertyType: propertyType,
-      amenities: amenities,
-    },
-  });
-  return response.data;
-};
+//   const response = await axiosClient.get("show-property-index", {
+//     params: {
+//       category: category,
+//       province: province,
+//       checkInFilter: checkIn,
+//       checkOutFilter: checkOut,
+//       guest_count: accommodate,
+//       roomType: roomType,
+//       bedRoom: bed,
+//       bathRoom: bath,
+//       propertyType: propertyType,
+//       amenities: amenities,
+//     },
+//   });
+//   return response.data;
+// };
 
-export const PropertyIndexQuery = (category, firstFilterObj, secondFilterObj) => {
-  const propertyQuery = useQuery({
-    queryKey: ["property-index", category, firstFilterObj, secondFilterObj],
-    queryFn: readPropertyIndex,
-  });
+// export const PropertyIndexQuery = (category, firstFilterObj, secondFilterObj) => {
+//   const propertyQuery = useQuery({
+//     queryKey: ["property-index", category, firstFilterObj, secondFilterObj],
+//     queryFn: readPropertyIndex,
+//   });
 
-  return propertyQuery;
-};
+//   return propertyQuery;
+// };
 
 const previewFilter = async (query) => {
   const category = query.queryKey[1];
@@ -178,12 +193,73 @@ const previewFilter = async (query) => {
   return response.data;
 };
 
-export const FilterPreviewQuery = (category, firstFilterObj, secondFilterObj) => {
+export const FilterPreviewQuery = (
+  category,
+  firstFilterObj,
+  secondFilterObj
+) => {
   const query = useQuery({
-    queryKey: ["property-filter-preview", category, firstFilterObj, secondFilterObj],
+    queryKey: [
+      "property-filter-preview",
+      category,
+      firstFilterObj,
+      secondFilterObj,
+    ],
     queryFn: previewFilter,
     keepPreviousData: true,
   });
 
   return query;
+};
+
+const readPropertyIndex = async (
+  pageParam,
+  category,
+  firstFilterObj,
+  secondFilterObj
+) => {
+  const province = firstFilterObj.province;
+  const checkIn = firstFilterObj.checkIn;
+  const checkOut = firstFilterObj.checkOut;
+  const accommodate = firstFilterObj.guest_count;
+
+  const roomType = secondFilterObj.roomType;
+  const bed = secondFilterObj.bed;
+  const bath = secondFilterObj.bath;
+  const propertyType = secondFilterObj.propertyType;
+  const amenities = secondFilterObj.amenities;
+
+  const response = await axiosClient.get("show-property-index", {
+    params: {
+      category: category,
+      province: province,
+      checkInFilter: checkIn,
+      checkOutFilter: checkOut,
+      guest_count: accommodate,
+      roomType: roomType,
+      bedRoom: bed,
+      bathRoom: bath,
+      propertyType: propertyType,
+      amenities: amenities,
+      page: pageParam,
+    },
+  });
+  return response.data;
+};
+
+export const PropertyIndexQuery = (
+  category,
+  firstFilterObj,
+  secondFilterObj
+) => {
+  const propertyQuery = useInfiniteQuery({
+    queryKey: ["property-index", category, firstFilterObj, secondFilterObj],
+    queryFn: ({ pageParam = 1 }) =>
+      readPropertyIndex(pageParam, category, firstFilterObj, secondFilterObj),
+    getNextPageParam: (page) => {
+      return page.current_page === page.last_page ? undefined : page.current_page + 1;
+    },
+  });
+
+  return propertyQuery;
 };
