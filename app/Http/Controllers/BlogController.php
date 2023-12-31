@@ -189,6 +189,7 @@ class BlogController extends Controller
     {
         $search = $request->search;
         $currentPage = $request->page;    //api bên react đã gửi cái params có tên là page
+        
 
         $collections = Blog::where('title', 'LIKE', '%' . $search . '%')->get();
         $total = count($collections);

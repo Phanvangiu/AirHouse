@@ -521,7 +521,7 @@ class PropertyController extends Controller
 
   
 
-        // $property = $property->orderByDesc('booking_count');
+        $property = $property->orderByRaw('ISNULL(rating), average_rating DESC')->orderByDesc('booking_count');
 
 
 
