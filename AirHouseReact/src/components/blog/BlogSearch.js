@@ -16,11 +16,13 @@ const StyleTop = styled.div`
 `;
 
 const StyleNotFound = styled.div`
-  position: absolute;
   font-size: 2rem;
   font-weight: 300;
   color: lightgray;
+  width: 50rem;
+  padding-left: 5rem;
 `;
+
 const StyleViewMore = styled.button`
   display: block;
 

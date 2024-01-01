@@ -19,6 +19,7 @@ import { CategoryValueQuery } from "api/blogCategoryApi";
 const StyledContainer = styled.div`
   font-family: "Poppins", sans-serif;
 
+
   ${(props) => {
     if (props.$home) {
       return css`

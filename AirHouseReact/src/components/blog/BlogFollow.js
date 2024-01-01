@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import styled from "styled-components";
 import { faXTwitter, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const StyledBlogFl = styled.div`
   display: grid;
@@ -124,6 +125,10 @@ const StyleButton = styled.button`
 `;
 
 export default function BlogFollow() {
+  const navigate = useNavigate();
+  const handleItemClick = () => {
+    navigate("/blog/159");
+  };
   return (
     <StyledBlogFl>
       <StyleLeft>
@@ -165,8 +170,8 @@ export default function BlogFollow() {
           />
         </StyleIMG_R>
         <StyleContent_R>
-          <p>Hear more from Co-founder and CEO Khloe Nguyen</p>
-          <button>Learn more</button>
+          <p>Hear more from Co-founder and CEO Tan Dinh Ngo</p>
+          <button onClick={handleItemClick}>Learn more</button>
         </StyleContent_R>
       </StyleRight>
     </StyledBlogFl>
