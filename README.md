@@ -17,3 +17,6 @@ Intallation guide <br/>
 Database source : 'airhouse.sql' <br/>
 Documentation : 'REVIEW_FINAL_GROUP2_AIR_HOUSE' <br/>
 
+
+Note: all document in 'Document' folder, database file in 'sql file'
+
