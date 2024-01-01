@@ -13,7 +13,7 @@ Team members include:
 
 Documetation included on the main folder:
 
-Intallation guide
-Database source : 'airhouse.sql'
-Documentation : 'REVIEW_FINAL_GROUP2_AIR_HOUSE'
+Intallation guide <br/>
+Database source : 'airhouse.sql' <br/>
+Documentation : 'REVIEW_FINAL_GROUP2_AIR_HOUSE' <br/>
 
