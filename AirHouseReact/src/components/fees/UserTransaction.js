@@ -69,6 +69,7 @@ export default function UserTransaction() {
           <th>Check-in</th>
           <th>Check-out</th>
           <th>Host</th>
+          <th>Property</th>
         </thead>
         <tbody>
           {userPaymentQuery.data.map((item, index) => {
@@ -95,6 +96,14 @@ export default function UserTransaction() {
                     {item.property.user.first_name}{" "}
                     {item.property.user.last_name}
                   </span>
+                </td>
+                <td
+                  className="user-avatar"
+                  onClick={() =>
+                    window.open(`/property?id=${item.property.id}`, "_blank")
+                  }
+                >
+                  {item.property.name}
                 </td>
               </tr>
             );

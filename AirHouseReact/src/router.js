@@ -84,6 +84,8 @@ const PropertyChart = lazy(() => import("views/property-chart/PropertyChart"))
 
 const Fees = lazy(() => import("components/fees/Fees"));
 
+const PageNotFound = lazy(() => import("components/PageNotFound"))
+
 const router = createBrowserRouter([
   {
     path: "/user",
@@ -306,7 +308,7 @@ const router = createBrowserRouter([
   {
     path: "*",
     name: "rrst",
-    element: <Chat />,
+    element: <PageNotFound />,
   },
 ]);
 

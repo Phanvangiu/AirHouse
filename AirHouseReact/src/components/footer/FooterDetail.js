@@ -5,21 +5,21 @@ const FooterDetail = () => {
     <div>
       <div>
         <p>© 2023 Airbnb</p>
-        <a href="https://www.airbnb.com/">Terms</a>
-        <a href="https://www.airbnb.com/">Sitemap</a>
-        <a href="https://www.airbnb.com/">PrivacyYour</a>
-        <a href="https://www.airbnb.com/">Privacy Choices</a>
+        <a href="">Terms</a>
+        <a href="">Sitemap</a>
+        <a href="">PrivacyYour</a>
+        <a href="">Privacy Choices</a>
         <button>
-          <a href="https://www.airbnb.com/">z</a>
+          <a href="">z</a>
         </button>
       </div>
       <div>
-        <a href="https://www.airbnb.com/">z</a>
-        <a href="https://www.airbnb.com/">z</a>
-        <a href="https://www.airbnb.com/">z</a>
-        <a href="https://www.airbnb.com/">z</a>
-        <a href="https://www.airbnb.com/">z</a>
-        <a href="https://www.airbnb.com/">z</a>
+        <a href="">z</a>
+        <a href="">z</a>
+        <a href="">z</a>
+        <a href="">z</a>
+        <a href="">z</a>
+        <a href="">z</a>
       </div>
     </div>
   );

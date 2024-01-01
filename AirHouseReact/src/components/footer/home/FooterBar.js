@@ -113,12 +113,9 @@ export default function FooterBar({ variant }) {
             <StyledLeftContent>
               <p>&#169; 2023 Airhouse, Inc.</p>
               <span>&#183;</span>
-              <StyledLink>Terms</StyledLink>
+              <StyledLink to={"/blog"}>News</StyledLink>
               <span>&#183;</span>
-              <StyledLink>Sitemap</StyledLink>
-              <span>&#183;</span>
-              <StyledLink>Privacy</StyledLink>
-              <span>&#183;</span>
+            
               <StyledLink>
                 Your Privacy Choices <FontAwesomeIcon icon={faCheck} />
               </StyledLink>

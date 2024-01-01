@@ -76,7 +76,7 @@ export default function FooterBarCreation() {
           <StyledLeftContent>
             <p>&#169; 2023 Airhouse, Inc.</p>
             <span>&#183;</span>
-            <StyledLink>Terms</StyledLink>
+            <StyledLink to={"/blog"}>News</StyledLink>
             <span>&#183;</span>
             <StyledLink>Sitemap</StyledLink>
             <span>&#183;</span>
@@ -86,8 +86,7 @@ export default function FooterBarCreation() {
               Your Privacy Choices <FontAwesomeIcon icon={faCheck} />
             </StyledLink>
           </StyledLeftContent>
-          <StyledRightContent>
-          </StyledRightContent>
+          <StyledRightContent></StyledRightContent>
         </StyledContainer>
       </StyledFooter>
     </>

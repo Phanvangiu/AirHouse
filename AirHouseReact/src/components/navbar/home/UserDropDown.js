@@ -117,6 +117,10 @@ function UserDropDown({ blur, showDropDown }) {
     navigate("/user/view-all-host-bookings");
   };
 
+  const onBlogHandler = () => {
+    navigate("/blog");
+  }
+
   return (
     <StyledContainer>
       {showDropDown && (
@@ -138,6 +142,9 @@ function UserDropDown({ blur, showDropDown }) {
           )}
           {userQuery.isSuccess && (
             <button onClick={onRentingHandler}>My Renting</button>
+          )}
+          {userQuery.isSuccess && (
+            <button onClick={onBlogHandler}>News</button>
           )}
           {userQuery.isSuccess && (
             <button onClick={onLogoutHandler}>Log out</button>

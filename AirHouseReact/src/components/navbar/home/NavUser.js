@@ -78,7 +78,7 @@ function NavUser() {
   return (
     <StyledContainer>
       {userQuery.isError || userQuery.isLoading ? (
-        <StyledTextLink to="/aircover-for-hosts">Airbnb your home</StyledTextLink>
+        <StyledTextLink to="/blog">News</StyledTextLink>
       ) : (
         <StyledTextLink to="/user/host-creation/become-host">Become a Host</StyledTextLink>
       )}

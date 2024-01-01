@@ -162,14 +162,14 @@ export default function NavTopCenterHome({ click }) {
             {!state.accommodate && <span>Add guests</span>}
             {state.accommodate && <span>{state.accommodate} guests</span>}
             {(state.province != "none" || state.checkIn || state.checkOut || state.accommodate) && (
-              <button onClick={onClearFilter}>
+              <div onClick={onClearFilter}>
                 <FontAwesomeIcon className="icon" icon={faTimes}></FontAwesomeIcon>
-              </button>
+              </div>
             )}
             {state.province == "none" && !state.checkIn && !state.checkOut && !state.accommodate && (
-              <button>
+              <div>
                 <FontAwesomeIcon className="icon" icon={faMagnifyingGlass}></FontAwesomeIcon>
-              </button>
+              </div>
             )}
           </button>
         </StyledContainer>
