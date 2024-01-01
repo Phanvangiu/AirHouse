@@ -350,6 +350,8 @@ class BookingController extends Controller
             $bookings = $bookings->where('booking_status', $request->status);
         }
 
+        $bookings = $bookings->orderByDesc('created_at');
+
         $bookings = $bookings->paginate(10);
 
         foreach ($bookings as $booking) {

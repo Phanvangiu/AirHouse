@@ -26,7 +26,6 @@ const StyledPopUp = styled(PopUpContainer)`
   width: 50rem;
   height: 25rem;
   padding: 1rem;
-
 `;
 
 const StyledContainer = styled.div`
@@ -35,7 +34,7 @@ const StyledContainer = styled.div`
   gap: 2rem;
   padding: 3rem;
 
-  & .avatar{
+  & .avatar {
     cursor: pointer;
   }
 
@@ -105,6 +104,12 @@ const StyledBooking = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+
+    & h5{
+      color: red;
+      line-height: 20px;
+    }
   }
 
   & .icon {
@@ -209,6 +214,13 @@ const formatDate = (dateObj) => {
     date < 10 ? "0" + date : date
   }`;
 };
+
+
+function convertToLocalDatetime(datetimeString) {
+  let date = new Date(datetimeString);
+  return date.toLocaleString();
+}
+
 
 export default function BookingDetail() {
   const navigate = useNavigate();
@@ -503,21 +515,35 @@ export default function BookingDetail() {
                       {booking.check_in_date} <span className="to">to</span>{" "}
                       {booking.check_out_date}
                     </p>
+                    {booking.booking_status == "waiting" && (
+                      <h5>The booking request will be automatically converted to "denied" after 72 hours from {convertToLocalDatetime(booking.created_at)}</h5>
+                    )}
                   </div>
 
                   <StyledButtonList>
                     <button
-                      disabled={active[0] != true || denyMutation.isPending || acceptMutation.isPending}
+                      disabled={
+                        active[0] != true ||
+                        denyMutation.isPending ||
+                        acceptMutation.isPending
+                      }
                       onClick={(ev) => onAccept(ev, booking.id)}
                     >
-                      {denyMutation.isPending || acceptMutation.isPending ? <span>Loading...</span> : <span>Accept</span>}
-                      
+                      {denyMutation.isPending || acceptMutation.isPending ? (
+                        <span>Loading...</span>
+                      ) : (
+                        <span>Accept</span>
+                      )}
                     </button>
                     <button
                       disabled={active[0] != true}
                       onClick={(ev) => onDeny(ev, booking.id)}
                     >
-                       {denyMutation.isPending || acceptMutation.isPending ? <span>Loading...</span> : <span>Deny</span>}
+                      {denyMutation.isPending || acceptMutation.isPending ? (
+                        <span>Loading...</span>
+                      ) : (
+                        <span>Deny</span>
+                      )}
                     </button>
                     <button
                       disabled={active[2] != true}

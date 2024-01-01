@@ -17,11 +17,13 @@ import { HostRatingMutation } from "api/startApi";
 import { HostReviewUserQuery } from "api/startApi";
 import { useQueryClient } from "@tanstack/react-query";
 import { UserQuery } from "api/userApi";
+import { faPhone } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 const StyledContainer = styled.div`
   display: grid;
   grid-template-columns: 1.5fr 2fr 1fr;
-  grid-auto-rows: 12.5rem;
+  grid-auto-rows: 13.5rem;
 
   column-gap: 1rem;
   box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
@@ -114,6 +116,12 @@ const StyledSecond = styled.div`
   .dollar {
     font-weight: 600;
     font-size: 15px;
+  }
+
+
+  h5{
+    font-size: 13px;
+    color: red;
   }
 `;
 
@@ -211,6 +219,12 @@ const StyledDisplayNone = styled.div`
   display: none;
 `;
 
+function convertToLocalDatetime(datetimeString) {
+  let date = new Date(datetimeString);
+  return date.toLocaleString();
+}
+
+
 export default function ViewHostBookingItem({ data }) {
   const userQuery = UserQuery();
 
@@ -246,10 +260,17 @@ export default function ViewHostBookingItem({ data }) {
     });
   };
 
-  const onClickProperty = () => {
+  const onClickBookingDetail = () => {
     navigate({
       pathname: "/user/booking-detail",
       search: `?property_id=${data.property.id}`,
+    });
+  };
+
+  const onClickProperty = () => {
+    navigate({
+      pathname: "/property",
+      search: `?id=${data.property.id}`,
     });
   };
 
@@ -280,8 +301,8 @@ export default function ViewHostBookingItem({ data }) {
           <img src={data.property.images[0].image} />
         </StyledFirst>
         <StyledSecond>
-          <h3 onClick={onClickProperty}>
-            {data.property.name} - {data.user.id}
+          <h3 onClick={onClickBookingDetail}>
+            {data.property.name} - {data.user.id} - {data.booking_status.charAt(0).toUpperCase() + data.booking_status.slice(1) }
           </h3>
           <div>
             <p>
@@ -290,14 +311,20 @@ export default function ViewHostBookingItem({ data }) {
             </p>
             <p>
               <FontAwesomeIcon className="icon" icon={faCalendar} /> From{" "}
-              {data.check_in_date} <span className="to">to</span>
+              {data.check_in_date} <span className="to">to</span> {" "}
               {data.check_out_date}
+            </p>
+            <p>
+              <FontAwesomeIcon className="icon" icon={faEnvelope} />
+              <span>{data.user.email}</span>{" "}
             </p>
             <p>
               <FontAwesomeIcon className="icon" icon={faDollar} />
               <span className="dollar">{data.price_for_stay}</span>{" "}
             </p>
+            {data.booking_status == "waiting" && <h5>The booking request will be automatically converted to "denied" after 72 hours from {convertToLocalDatetime(data.created_at)}</h5>}
           </div>
+          
         </StyledSecond>
         <StyledThird className="third">
           <Avatar

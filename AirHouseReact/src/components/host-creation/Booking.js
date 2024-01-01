@@ -297,7 +297,7 @@ const Booking = () => {
                     <option value={"09AM"}>09:00 AM</option>
                     <option value={"10AM"}>10:00 AM</option>
                     <option value={"11AM"}>11:00 AM</option>
-                    <option value={"12AM"}>12:00 AM</option>
+                    <option value={"12PM"}>12:00 PM</option>
                   </StyledSelect>
                 </StyledSelectContainer>
               </StyledBooking>

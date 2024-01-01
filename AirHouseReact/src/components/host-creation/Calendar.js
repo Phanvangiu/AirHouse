@@ -393,6 +393,7 @@ const Calendar = () => {
 
   const onAddExceptionDate = (ev) => {
     ev.preventDefault();
+    
     setExceptionValueArray([
       ...exceptionValueArray,
       {

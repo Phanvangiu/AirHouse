@@ -47,6 +47,10 @@ const Box = styled.div`
     flex-direction: column;
     gap: 10px;
 
+    & p:nth-of-type(1){
+      font-weight: 600;
+    }
+
     & .bar {
       margin-right: 10px;
     }
@@ -118,6 +122,8 @@ const StyledPay = styled.p`
 const StyledAlert = styled.h4`
   color: red;
 `;
+
+
 export default function BookingItem(props) {
   const navigate = useNavigate();
 
@@ -138,7 +144,7 @@ export default function BookingItem(props) {
         <img className="property-image" src={props.BookingItem.image} />
       </div>
       <div className="item2">
-        <p style={{ fontWeight: "bold" }}>
+        <p>
           {props.BookingItem.id} - {props.BookingItem.Property_Name} - {props.BookingItem.status.charAt(0).toUpperCase() + props.BookingItem.status.slice(1)}
         </p>
         <p>

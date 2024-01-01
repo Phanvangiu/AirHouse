@@ -35,7 +35,7 @@ class TransactionFactory extends Factory
         $site_fees = fake()->numberBetween(1, 50);
         $host_fee = fake()->numberBetween(1, 50);
         $amount = fake()->numberBetween(100, 1000);
-        $transfer_on = fake()->dateTimeBetween('2020-01-20', '2023-12-27');
+        $transfer_on = fake()->dateTimeBetween('2020-01-20', '2024-01-01');
 
         return [
             //

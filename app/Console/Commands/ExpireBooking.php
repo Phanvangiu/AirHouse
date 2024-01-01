@@ -51,7 +51,7 @@ class ExpireBooking extends Command
         $bookingWaiting = Booking::where("booking_status", "waiting")->get();
         if ($bookingWaiting) {
             foreach ($bookingWaiting as $booking) {
-                $time  = $now->diffInHours($booking->updated_at);
+                $time  = $now->diffInHours($booking->created_at);
                 if ($time >= 72) {
                     $booking->booking_status = "denied";
                     $booking->save();

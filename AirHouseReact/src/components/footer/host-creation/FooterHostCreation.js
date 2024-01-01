@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const TitleAbout = ["Support", "Hosting", "Airbnb"];
-const link = "https://www.airbnb.com/";
+const link = "";
 const secondColumnLink = ["", "aircover-for-hosts", "/best-host", "", "", ""];
 
 const SupportDetail = [
@@ -23,7 +23,14 @@ const HostingDetail = [
   "Hosting responsibly",
   "Airbnb-friendly apartments",
 ];
-const AirbnbDetail = ["Newsroom", "New features", "Careers", "Investors", "Gift cards", "Airbnb.org emergency stays"];
+const AirbnbDetail = [
+  "Newsroom",
+  "New features",
+  "Careers",
+  "Investors",
+  "Gift cards",
+  "Airbnb.org emergency stays",
+];
 
 const StyleAbout = styled.div`
   display: grid;
@@ -108,15 +115,17 @@ const FooterHostCreation = () => {
         <AboutSession
           title={TitleAbout[0]}
           item={SupportDetail.map((value, index) => (
-            <StyleA key={index} href={link}>
-              {value}
-            </StyleA>
+            <StyleA key={index}>{value}</StyleA>
           ))}
         ></AboutSession>
         <AboutSession
           title={TitleAbout[1]}
           item={HostingDetail.map((value, index) => (
-            <StyledLink key={index} className="link" to={secondColumnLink[index]}>
+            <StyledLink
+              key={index}
+              className="link"
+              to={secondColumnLink[index]}
+            >
               {value}
             </StyledLink>
           ))}
@@ -124,9 +133,7 @@ const FooterHostCreation = () => {
         <AboutSession
           title={TitleAbout[2]}
           item={AirbnbDetail.map((value, index) => (
-            <StyleA key={index} href={link}>
-              {value}
-            </StyleA>
+            <StyleA key={index}>{value}</StyleA>
           ))}
         ></AboutSession>
       </StyleAbout>

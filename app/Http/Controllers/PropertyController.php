@@ -338,8 +338,14 @@ class PropertyController extends Controller
         }
 
         if ($request->checkOutFilter) {
+
+
             $checkInFilter = $request->checkInFilter;
             $checkOutFilter = $request->checkOutFilter;
+            $to = Carbon::parse( $request->checkInFilter);
+            $from = Carbon::parse( $request->checkOutFilter);
+            $diffInDates =  $to->diffInDays($from) + 1;
+
             $property = $property->where('start_date', '<=', $request->checkInFilter)
                 ->where('end_date', '>=',  $request->checkOutFilter)
                 ->whereDoesntHave('booking', function ($query) use ($checkInFilter, $checkOutFilter) {
@@ -365,7 +371,8 @@ class PropertyController extends Controller
                         $subQuery->whereDate('start_date', '>=', $checkInFilter)
                             ->whereDate('end_date', '<=', $checkOutFilter);
                     });
-                });
+                })
+                ->where('minimum_stay', '<=', $diffInDates)->where('maximum_stay', '>=', $diffInDates);
         }
 
         if ($request->guest_count) {
@@ -432,7 +439,7 @@ class PropertyController extends Controller
     public function showInIndex(Request $request)
     {
         $category = $request->category;
-        $property = Property::with('user', 'category', 'property_type', 'room_type', 'district', 'province', 'amenities', 'images', 'exception_date')->where('category_id', $category);
+        $property = Property::with('rating', 'user', 'category', 'property_type', 'room_type', 'district', 'province', 'amenities', 'images', 'exception_date')->where('category_id', $category);
         $property = $property->where('acception_status', 'accept');
         $property = $property->where('property_status', true);
 
@@ -445,8 +452,14 @@ class PropertyController extends Controller
         }
 
         if ($request->checkOutFilter) {
+
+
             $checkInFilter = $request->checkInFilter;
             $checkOutFilter = $request->checkOutFilter;
+            $to = Carbon::parse( $request->checkInFilter);
+            $from = Carbon::parse( $request->checkOutFilter);
+            $diffInDates =  $to->diffInDays($from) + 1;
+
             $property = $property->where('start_date', '<=', $request->checkInFilter)
                 ->where('end_date', '>=',  $request->checkOutFilter)
                 ->whereDoesntHave('booking', function ($query) use ($checkInFilter, $checkOutFilter) {
@@ -472,7 +485,8 @@ class PropertyController extends Controller
                         $subQuery->whereDate('start_date', '>=', $checkInFilter)
                             ->whereDate('end_date', '<=', $checkOutFilter);
                     });
-                });
+                })
+                ->where('minimum_stay', '<=', $diffInDates)->where('maximum_stay', '>=', $diffInDates);
         }
 
         if ($request->guest_count) {
@@ -514,17 +528,8 @@ class PropertyController extends Controller
 
         $property = $property->withCount('booking');
 
-        $property = $property->with(['rating' => function ($query) {
-            $query->selectRaw('property_id, AVG(start) as average_rating')
-                ->groupBy('property_id');
-        }]);
 
-  
-
-        $property = $property->orderByRaw('ISNULL(rating), average_rating DESC')->orderByDesc('booking_count');
-
-
-
+        $property = $property->orderByDesc('booking_count');
 
         $property = $property->paginate(20);
 

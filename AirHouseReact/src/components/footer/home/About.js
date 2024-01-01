@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 const TitleAbout = ["Support", "Hosting", "Airbnb"];
-const link = "https://www.airbnb.com/";
+const link = "";
 const secondColumnLink = ["", "aircover-for-hosts", "/best-host", "", "", ""];
 
 const SupportDetail = [

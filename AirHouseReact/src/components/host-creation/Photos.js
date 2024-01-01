@@ -224,6 +224,11 @@ const Photos = () => {
       return;
     }
 
+    if(state.images.length >30){
+      alert("Can only upload 30 images maximum");
+      return;
+    }
+
     onSetActive(6);
     onSetAvailable(6);
   };

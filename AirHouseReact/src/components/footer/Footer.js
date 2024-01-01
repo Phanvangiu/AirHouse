@@ -59,7 +59,7 @@ const itemPopulardetail = [
   "Cottage rentals",
   "Beach house rentals",
 ];
-const link = "https://www.airbnb.com/";
+const link = "";
 const titleGetaways = ["Inspiration for future getaways"];
 const StyledContainer = styled(StyledHomePageContainer)`
   width: 100%;

@@ -36,7 +36,7 @@ export default function ViewHostBookingSideBar({ setChoice, choice }) {
       <StyledItem $choice={choice == "accepted" ? true : false} onClick={() => setChoice("accepted")}>
         Accepted
       </StyledItem>
-      <StyledItem $choice={choice == "waiting" ? true : false} onClick={() => setChoice("wating")}>
+      <StyledItem $choice={choice == "waiting" ? true : false} onClick={() => setChoice("waiting")}>
         Waiting
       </StyledItem>
       <StyledItem $choice={choice == "denied" ? true : false} onClick={() => setChoice("denied")}>

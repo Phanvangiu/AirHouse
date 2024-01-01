@@ -29,7 +29,7 @@ class BookingFactory extends Factory
         $property_id = fake()->randomElement($properties);
 
         $total_day_booking = fake()->numberBetween(1, 5) ;
-        $check_in_date = Carbon::parse(fake()->dateTimeBetween('2023-12-01', '2024-03-01'));
+        $check_in_date = Carbon::parse(fake()->dateTimeBetween('2023-12-31', '2024-01-31'));
         $check_out_date = Carbon::parse($check_in_date);
         $check_out_date->addDays($total_day_booking);
 

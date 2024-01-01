@@ -102,8 +102,8 @@ const StyledError = styled.div`
 
 const StyledGoogleLogin = styled.button``;
 
-const EMAIL_REGEX = /^[0-9a-zA-Z_]+@[0-9a-zA-Z]+\.[0-9a-zA-Z]+$/;
-const PASSWORD_REGEX = /^.{8,}$/;
+const EMAIL_REGEX = /^[0-9a-zA-Z_.]+@[0-9a-zA-Z.]+\.[0-9a-zA-Z.]+$/;
+const PASSWORD_REGEX = /^.{9,}$/;
 
 const Login = ({ setShowLogin }) => {
   const signUpGoogleMutation = SignUpGoogleMutation();
