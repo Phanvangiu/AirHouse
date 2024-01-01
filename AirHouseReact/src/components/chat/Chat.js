@@ -38,12 +38,15 @@ export default function Chat(props) {
   const getAllUserQuery = GetAllUserQuery();
   const [allUser, setAllUSer] = useState([]);
   const [selectedUser, setSelectedUser] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setAllUSer(getAllUserQuery.data);
 
     if (getAllUserQuery.isSuccess && data.state) {
-      const isIncluded = getAllUserQuery.data.some((item) => item.email == data.state.user_Email);
+      const isIncluded = getAllUserQuery.data.some(
+        (item) => item.email == data.state.user_Email
+      );
       if (isIncluded) {
         console.log("true");
       } else {
@@ -62,7 +65,6 @@ export default function Chat(props) {
 
   useEffect(() => {
     if (allUser) {
-      console.log("alluser", allUser[0]);
       setSelectedUser(allUser[0]);
     }
   }, [allUser]);
@@ -86,7 +88,9 @@ export default function Chat(props) {
         };
         console.log(NewUser);
         if (NewUser && allUser) {
-          const isIncluded = allUser.some((item) => item.email == NewUser.email);
+          const isIncluded = allUser.some(
+            (item) => item.email == NewUser.email
+          );
           if (isIncluded) {
             console.log("true");
           } else {
@@ -102,8 +106,29 @@ export default function Chat(props) {
     };
   }, [userQuery.isSuccess, allUser]);
 
+  useEffect(() => {
+    console.log("on change", search);
+    if (allUser) {
+      const allUserFilter = allUser.filter((item) => {
+        console.log(item);
+        // let fullName = `${item.first_name}  ${item.last_Name}`;
+        return (
+          item.first_name.toLowerCase().includes(search) ||
+          item.last_name.toLowerCase().includes(search)
+        );
+      });
+      setAllUSer(allUserFilter);
+    }
+    if (search === "" && getAllUserQuery.isSuccess) {
+      setAllUSer(getAllUserQuery.data);
+    }
+  }, [search]);
+
   const changeSelectedUser = (item) => {
     setSelectedUser(item);
+  };
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
   };
   if (getAllUserQuery.isLoading) {
     return <Loading />;
@@ -116,6 +141,7 @@ export default function Chat(props) {
     <ChatBox>
       <div className="grid-container">
         <div className="item1">
+          <input type="text" value={search} onChange={(e) => handleSearch(e)} />
           {allUser &&
             allUser.map((item, index) => {
               return (
@@ -125,7 +151,9 @@ export default function Chat(props) {
               );
             })}
         </div>
-        <div className="item2">{selectedUser && <Message UserInfo={selectedUser} />}</div>
+        <div className="item2">
+          {selectedUser && <Message UserInfo={selectedUser} />}
+        </div>
         <div className="item3"></div>
       </div>
     </ChatBox>
