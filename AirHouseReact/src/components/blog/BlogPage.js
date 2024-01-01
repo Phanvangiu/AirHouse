@@ -1620,13 +1620,12 @@ const StyledContent = styled.div`
   img {
     display: block;
     margin: 0 auto;
-    max-width: 45rem;
-    max-height: fit-content;
+    width: 100%;
   }
 
   div {
-    margin: 5rem auto;
-    padding: 0 25rem;
+    width: 70%;
+    margin: auto;
     line-height: 1.5rem;
     text-align: justify;
 
