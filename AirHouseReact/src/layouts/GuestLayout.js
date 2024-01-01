@@ -126,11 +126,18 @@ export default function GuestLayout() {
           My Bookings
         </StyledMenuButton>
         <StyledMenuButton
+          $active={compareString(location.pathname, "/user/fees")}
+          onClick={() => navigate("/user/fees")}
+        >
+        Payment
+        </StyledMenuButton>
+        <StyledMenuButton
           $active={compareString(location.pathname, "/user/chat")}
           onClick={() => navigate("/user/chat")}
         >
           Messages
         </StyledMenuButton>
+        
       </StyledMenu>
       <Outlet />
       <FooterIndex />

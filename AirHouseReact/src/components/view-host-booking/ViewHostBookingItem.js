@@ -19,6 +19,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { UserQuery } from "api/userApi";
 import { faPhone } from "@fortawesome/free-solid-svg-icons";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { DenyBookingMutation } from "api/userBookingApi";
+import { AcceptBookingMutation } from "api/userBookingApi";
 
 const StyledContainer = styled.div`
   display: grid;
@@ -118,8 +120,7 @@ const StyledSecond = styled.div`
     font-size: 15px;
   }
 
-
-  h5{
+  h5 {
     font-size: 13px;
     color: red;
   }
@@ -224,12 +225,12 @@ function convertToLocalDatetime(datetimeString) {
   return date.toLocaleString();
 }
 
-
 export default function ViewHostBookingItem({ data }) {
   const userQuery = UserQuery();
-
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const denyMutation = DenyBookingMutation();
+  const acceptMutation = AcceptBookingMutation();
 
   const rating = data.user.ratings?.find(
     (item) => item.host_id == userQuery.data.user.id && item.property_id == null
@@ -294,6 +295,33 @@ export default function ViewHostBookingItem({ data }) {
     });
   };
 
+  const onDeny = (id) => {
+    if (!window.confirm("Are you sure you want to deny this booking?")) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append("booking_id", id);
+
+    denyMutation.mutate(formData, {
+      onSuccess: () => {
+        alert("success");
+      },
+    });
+  };
+
+  const onAccept = (id) => {
+    if (!window.confirm("Are you sure you want to accept this booking?")) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append("booking_id", id);
+
+    acceptMutation.mutate(formData, {
+      onSuccess: () => {
+        alert("success");
+      },
+    });
+  };
   return (
     <>
       <StyledContainer>
@@ -302,7 +330,9 @@ export default function ViewHostBookingItem({ data }) {
         </StyledFirst>
         <StyledSecond>
           <h3 onClick={onClickBookingDetail}>
-            {data.property.name} - {data.user.id} - {data.booking_status.charAt(0).toUpperCase() + data.booking_status.slice(1) }
+            {data.property.name} - {data.user.id} -{" "}
+            {data.booking_status.charAt(0).toUpperCase() +
+              data.booking_status.slice(1)}
           </h3>
           <div>
             <p>
@@ -311,7 +341,7 @@ export default function ViewHostBookingItem({ data }) {
             </p>
             <p>
               <FontAwesomeIcon className="icon" icon={faCalendar} /> From{" "}
-              {data.check_in_date} <span className="to">to</span> {" "}
+              {data.check_in_date} <span className="to">to</span>{" "}
               {data.check_out_date}
             </p>
             <p>
@@ -322,9 +352,13 @@ export default function ViewHostBookingItem({ data }) {
               <FontAwesomeIcon className="icon" icon={faDollar} />
               <span className="dollar">{data.price_for_stay}</span>{" "}
             </p>
-            {data.booking_status == "waiting" && <h5>The booking request will be automatically converted to "denied" after 72 hours from {convertToLocalDatetime(data.created_at)}</h5>}
+            {data.booking_status == "waiting" && (
+              <h5>
+                The booking request will be automatically converted to "denied"
+                after 72 hours from {convertToLocalDatetime(data.created_at)}
+              </h5>
+            )}
           </div>
-          
         </StyledSecond>
         <StyledThird className="third">
           <Avatar
@@ -338,12 +372,13 @@ export default function ViewHostBookingItem({ data }) {
             round={true}
             name={data.user.first_name}
           />
-          {data.booking_status == "waiting" && <button>Accept</button>}
-          {data.booking_status == "waiting" && <button>Deny</button>}
-          {(data.booking_status == "accepted" ||
-            data.booking_status == "success") && (
-            <button>Payment Detail</button>
+          {data.booking_status == "waiting" && (
+            <button onClick={() => onAccept(data.id)}>Accept</button>
           )}
+          {data.booking_status == "waiting" && (
+            <button onClick={() => onDeny(data.id)}>Deny</button>
+          )}
+ 
           {data.booking_status == "success" && (
             <button onClick={() => setShowRating(true)}>Rating</button>
           )}

@@ -161,6 +161,14 @@ const StyledA = styled.a`
   font-size: 18px;
   margin-top: 1rem;
 `;
+
+const StyledContactButton = styled.button`
+  width: fit-content;
+  font-size: 13px;
+  font-weight: 600;
+
+`;
+
 const formatDate = (dateObj) => {
   const monthNames = [
     "January",

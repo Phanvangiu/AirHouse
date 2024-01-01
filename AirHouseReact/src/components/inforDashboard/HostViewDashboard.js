@@ -77,7 +77,7 @@ const StyleTabButton = styled.button`
 `;
 
 const StyleTabBody = styled.div`
-  max-height: 20rem;
+  max-height: 40rem;
   overflow-y: scroll;
   margin: 2rem 0;
   font-size: 1.1rem;
@@ -305,7 +305,7 @@ export default function HostViewDashBoard() {
                         <>
                           {data.user.ratings
                             .filter((item) => item.property_id == null)
-                            .slice(0, 4)
+                            
                             .map((item, index) => {
                               return (
                                 <StyleCmt key={index}>
@@ -335,7 +335,7 @@ export default function HostViewDashBoard() {
                         <>
                           {data.user.ratings
                             .filter((item) => item.host_id == null)
-                            .slice(0, 4)
+                            
                             .map((item, index) => {
                               return (
                                 <StyleCmt key={index}>

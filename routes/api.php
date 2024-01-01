@@ -166,6 +166,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
   Route::get('/readHostReview', [RatingController::class, 'readHostReview']);
   Route::get('/allHostReviewUser', [RatingController::class, 'allHostReviewUser']);
 
+  Route::get('/get-user-payment', [BookingController::class, 'getUserPayment']);
+  Route::get('/get-host-fees', [BookingController::class, 'getHostFees']);
 });
 
 

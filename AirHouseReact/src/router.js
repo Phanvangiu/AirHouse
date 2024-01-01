@@ -82,12 +82,19 @@ const HostViewDashBoard = lazy(() => import("components/inforDashboard/HostViewD
 
 const PropertyChart = lazy(() => import("views/property-chart/PropertyChart"))
 
+const Fees = lazy(() => import("components/fees/Fees"));
+
 const router = createBrowserRouter([
   {
     path: "/user",
     element: <GuestLayout />,
     exact: true,
     children: [
+      {
+        path: "fees",
+        element: <Fees />,
+        exact: true,
+      },
       {
         path: "your-dashboard",
         element: <HostViewDashBoard />,

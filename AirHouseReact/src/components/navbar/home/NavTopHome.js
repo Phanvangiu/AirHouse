@@ -103,9 +103,8 @@ export default function NavTopHome() {
         {pageWidth >= 800 ? <NavLogo /> : <></>}
         <AnimatePresence>{state.isShow || <NavTopCenterHome click={clickShow} />}</AnimatePresence>
         <AnimatePresence>{state.isShow && <AfterEffectNavCenterHome isStay={state.isShow} />}</AnimatePresence>
-        {pageWidth >= 800 ? <NavUser /> : <FilterButton setClickFilter={setClickFilter} />}
+        {pageWidth >= 800 ? <NavUser /> : <><FilterButton setClickFilter={setClickFilter} /><ReponsiveNavUser /></>}
 
-        {pageWidth < 800 && <ReponsiveNavUser />}
       </NavBarContainer>
       {state.isShow && <StyledOverlay onClick={clickOut} />}
       <StyledPopUp $height={state.isShow}>

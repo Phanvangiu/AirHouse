@@ -331,7 +331,10 @@ class BookingController extends Controller
 
         foreach ($bookings as $booking) {
             $booking->image = asset("storage/images/host/" . $booking->image);
+            $booking->user_image = asset("storage/images/users/" . $booking->user_image);
         }
+
+
 
         return $bookings;
     }
@@ -368,6 +371,34 @@ class BookingController extends Controller
 
 
 
+        return response($bookings);
+    }
+
+
+    public function getUserPayment(Request $request)
+    {
+        $user = $request->user();
+        $bookings = Booking::with('property.user')->where('user_id', $user->id)->where('booking_status', 'success')
+            ->orderByDesc('updated_at')
+            ->get();
+
+        foreach ($bookings as $booking) {
+
+            if ($booking->property->user->image) {
+                $booking->property->user->image = asset('storage/images/users/' . $booking->property->user->image);
+            }
+        }
+
+        return response($bookings);
+    }
+
+    public function getHostFees(Request $request)
+    {
+        $user = $request->user();
+        $property_id = Property::where('user_id', $user->id)->pluck('id');
+        $bookings = Booking::with('property', 'user')->whereIn('property_id', $property_id)->where('booking_status', 'success')
+            ->orderByDesc('updated_at')
+            ->get();
         return response($bookings);
     }
 }

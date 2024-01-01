@@ -72,6 +72,10 @@ const Box = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    & .avatar{
+      cursor: pointer;
+    }
   }
 
   & .booking-item .grid-container .item3 .name-user-property {
@@ -175,6 +179,10 @@ export default function BookingItem(props) {
       <div className="item3">
         <div className="item3-item">
           <Avatar
+            className="avatar"
+           onClick={() =>
+              window.open(`/profile/dashboard/${props.BookingItem.id_user}`, "_blank")
+            }
             src={props.BookingItem.user_image}
             size="40px"
             textSizeRatio={2}

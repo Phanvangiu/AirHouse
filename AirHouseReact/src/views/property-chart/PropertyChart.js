@@ -15,6 +15,12 @@ const StyledContainer = styled.div`
   gap: 5rem;
 `;
 
+const StyledHeader = styled.div`
+  font-size: 18px;
+  font-weight: 800;
+  margin: 2rem 2rem;
+`;
+
 export default function PropertyChart() {
   const query = TotalCategoryBasedOnProvinceQuery();
   const categoryBasedQuery = TotalProvinceBasedOnCategoryQuery();
@@ -462,6 +468,10 @@ export default function PropertyChart() {
 
   return (
     <StyledContainer>
+      <StyledHeader>
+        <h5>Property Chart</h5>
+        <hr />
+      </StyledHeader>
       <BarChart chartData={data8} />
       <BarChart chartData={data12} />
       <BarChart chartData={data1} />
@@ -471,6 +481,10 @@ export default function PropertyChart() {
       <BarChart chartData={data5} />
       <BarChart chartData={data6} />
       <BarChart chartData={data7} />
+      <StyledHeader>
+        <h5>Category Chart</h5>
+        <hr />
+      </StyledHeader>
       <BarChart chartData={data9} />
       <BarChart chartData={data10} />
       <BarChart chartData={data11} />

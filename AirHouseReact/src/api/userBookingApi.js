@@ -71,14 +71,33 @@ const viepPropertyBooking = async (query) => {
   const currentPage = query.queryKey[5];
 
   const response = await axiosClient.get("view-property-booking", {
-    params: { property_id: propertyId, startDate: startDate, endDate: endDate, booking_status: status, page: currentPage },
+    params: {
+      property_id: propertyId,
+      startDate: startDate,
+      endDate: endDate,
+      booking_status: status,
+      page: currentPage,
+    },
   });
   return response.data;
 };
 
-export const PropertyBookingQuery = (propertyId, bookingStatus, startDate, endDate, currentPage) => {
+export const PropertyBookingQuery = (
+  propertyId,
+  bookingStatus,
+  startDate,
+  endDate,
+  currentPage
+) => {
   const query = useQuery({
-    queryKey: ["property-booking", propertyId, bookingStatus, startDate, endDate, currentPage],
+    queryKey: [
+      "property-booking",
+      propertyId,
+      bookingStatus,
+      startDate,
+      endDate,
+      currentPage,
+    ],
     queryFn: viepPropertyBooking,
     retry: 1,
   });
@@ -116,7 +135,9 @@ const viewAllHostBooking = async (query) => {
   const status = query.queryKey[2];
   const page = query.queryKey[3];
 
-  const response = await axiosClient.get("get-all-bookings-of-host", { params: { status: status, page: page } });
+  const response = await axiosClient.get("get-all-bookings-of-host", {
+    params: { status: status, page: page },
+  });
   return response.data;
 };
 
@@ -125,6 +146,34 @@ export const AllHostBookingQuery = (status, page) => {
     queryKey: ["all", "bookings", status, page],
     queryFn: viewAllHostBooking,
     retry: 1,
+  });
+
+  return query;
+};
+
+const readUserPayment = async (query) => {
+  const response = await axiosClient.get("get-user-payment");
+  return response.data;
+};
+
+export const UserPaymentQuery = () => {
+  const query = useQuery({
+    queryKey: ["user-payment"],
+    queryFn: readUserPayment,
+  });
+
+  return query;
+};
+
+const getHostFees = async (query) => {
+  const response = await axiosClient.get("get-host-fees");
+  return response.data;
+};
+
+export const HostFeesQuery = () => {
+  const query = useQuery({
+    queryKey: ["host-fees"],
+    queryFn: getHostFees,
   });
 
   return query;

@@ -12,6 +12,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
+
+
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -19,6 +22,9 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
