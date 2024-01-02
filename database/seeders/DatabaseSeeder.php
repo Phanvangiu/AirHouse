@@ -139,14 +139,29 @@ class DatabaseSeeder extends Seeder
         ///////////////////////////////////////////////////////////////////////////
 
 
-        for ($i = 0; $i < 300000; $i++) {
-            // SELECT * FROM `transactions` WHERE `payment_id` LIKE 'PM%'
-            Transaction::factory()->state([
-                'payment_id' => "PM$i"
-            ])->count(1)->create();
-        }
+        // for ($i = 0; $i < 300000; $i++) {
+        //     // SELECT * FROM `transactions` WHERE `payment_id` LIKE 'PM%'
+        //     Transaction::factory()->state([
+        //         'payment_id' => "PM$i"
+        //     ])->count(1)->create();
+        // }
+
+        //     $users = User::pluck('id');
+        //     foreach($users as $user){
+        //         Rating::factory()->state([
+        //             'renter_id' => $user
+        //         ])->count(5)->create();
+        //     }
+        // }
 
 
         // Booking::factory()->count(100000)->create();
+
+        $properties = Property::pluck('id');
+        foreach ($properties as $property) {
+            Rating::factory()->state([
+                'property_id' => $property
+            ])->count(2)->create();
+        }
     }
 }

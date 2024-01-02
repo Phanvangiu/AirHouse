@@ -225,7 +225,7 @@ function convertToLocalDatetime(datetimeString) {
   return date.toLocaleString();
 }
 
-export default function ViewHostBookingItem({ data }) {
+export default function ViewHostBookingItem({ data, choice, currentPage }) {
   const userQuery = UserQuery();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -304,6 +304,7 @@ export default function ViewHostBookingItem({ data }) {
 
     denyMutation.mutate(formData, {
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["all", "bookings"] });
         alert("success");
       },
     });
@@ -318,6 +319,7 @@ export default function ViewHostBookingItem({ data }) {
 
     acceptMutation.mutate(formData, {
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["all", "bookings"] });
         alert("success");
       },
     });
@@ -330,7 +332,7 @@ export default function ViewHostBookingItem({ data }) {
         </StyledFirst>
         <StyledSecond>
           <h3 onClick={onClickBookingDetail}>
-            {data.property.name} - {data.user.id} -{" "}
+            {data.property.name} - {data.id} -{" "}
             {data.booking_status.charAt(0).toUpperCase() +
               data.booking_status.slice(1)}
           </h3>
@@ -378,7 +380,7 @@ export default function ViewHostBookingItem({ data }) {
           {data.booking_status == "waiting" && (
             <button onClick={() => onDeny(data.id)}>Deny</button>
           )}
- 
+
           {data.booking_status == "success" && (
             <button onClick={() => setShowRating(true)}>Rating</button>
           )}

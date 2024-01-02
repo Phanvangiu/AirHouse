@@ -193,6 +193,7 @@ const SignupStep2 = ({ state, dispatch, setShowSignUp }) => {
           <StyledError>{lastNameError && <span>Last name is required</span>}</StyledError>
           <StyledInput
             type="date"
+            max={"2024-01-01"}
             id="birthday"
             name="birthday"
             value={state.date_of_birth}

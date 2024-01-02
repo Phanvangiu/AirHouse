@@ -137,7 +137,7 @@ export default function ViewHostBookingContent({ choice }) {
       <StyledContent>
         {bookingsQuery.isSuccess &&
           bookingsQuery.data.data.map((data, index) => {
-            return <ViewHostBookingItem key={index} data={data} />;
+            return <ViewHostBookingItem choice={choice} page={currentPage}  key={index} data={data} />;
           })}
       </StyledContent>
 

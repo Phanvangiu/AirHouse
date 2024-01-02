@@ -2,8 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Property;
+use App\Models\User;
 use App\Models\Rating;
+use App\Models\Property;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,11 +20,13 @@ class RatingFactory extends Factory
      */
     public function definition(): array
     {
-        $renter_id = 0;
-        $properties = Property::where('user_id', '!=', $renter_id)->pluck('id');
-        $property_id = fake()->randomElement($properties);
+        $users = User::pluck('id');
+        $renter_id = fake()->randomElement($users);
 
-        $start = fake()->numberBetween(1, 5);
+        $properties = Property::where('user_id', '!=', $renter_id)->pluck('id');
+        $property_id = 0;
+
+        $start = fake()->numberBetween(3, 5);
         $message = fake()->text();
         return [
             'property_id' => $property_id,

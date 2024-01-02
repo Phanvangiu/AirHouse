@@ -188,10 +188,10 @@ function BodyItem({ data, click }) {
             {data.base_price}$ <span>night</span>
           </p>
         </div>
-        <p className="second-box">
-          {calRating(data.rating) || ''} <FontAwesomeIcon className="start" icon={faStar} />
+        <div className="second-box">
+          {calRating(data.rating) || ''}<FontAwesomeIcon className="start" icon={faStar} />
 
-        </p>
+        </div>
       </StyledInfoBox>
     </StyledItemContainer>
   );

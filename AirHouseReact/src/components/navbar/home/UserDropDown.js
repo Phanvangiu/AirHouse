@@ -138,7 +138,7 @@ function UserDropDown({ blur, showDropDown }) {
             <button onClick={onListingHandler}>Listing</button>
           )}
           {userQuery.isSuccess && (
-            <button onClick={onTripHandler}>My Trips</button>
+            <button onClick={onTripHandler}>My Bookings</button>
           )}
           {userQuery.isSuccess && (
             <button onClick={onRentingHandler}>My Renting</button>
