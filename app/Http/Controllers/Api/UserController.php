@@ -15,6 +15,7 @@ use App\Http\Requests\SignUpRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rules\Password;
 
 
@@ -153,9 +154,10 @@ class UserController extends Controller
         if ($user) {
             $user->email_verify_at = now();
             $user->save();
-            return response()->json([
-                'message' => "ok"
-            ]);
+            // return response()->json([
+            //     'message' => "ok"
+            // ]);
+            return Redirect::to('http://localhost:3000/');
         }
     }
 
